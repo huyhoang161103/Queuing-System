@@ -1,0 +1,135 @@
+.logo-login {
+  transform: translateY(40%);
+  text-align: center;
+}
+
+.login {
+  font-family: "Nunito", sans-serif;
+  border-radius: 16px;
+  background: var(--bg, #f6f6f6);
+  align-items: center; /* Căn giữa các phần tử theo chiều dọc */
+  padding: 17px 36px 0px 36px;
+  gap: 59px;
+}
+
+.input-login {
+  transform: translateY(40%);
+  padding: 27px 46px 0px 46px;
+  gap: 59px;
+}
+
+.input-forgot {
+  transform: translateY(50%);
+  padding: 27px 70px 0px 70px;
+  gap: 59px;
+}
+
+.button-login {
+  transform: translateY(230%);
+  color: var(--white, #fff);
+  font-family: "Nunito", sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  padding: 7px 24px 10px 24px;
+  border-radius: 8px;
+  background: var(--orange-orange-400, #ff9138);
+  box-shadow: 0px 0px 6px 0px #e7e9f2;
+  border: none;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.quen-mk {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translateY(430%);
+}
+
+.forgot-pass {
+  text-decoration: none;
+  color: var(--red, #e73f3f);
+}
+
+.button-forgot {
+  display: flex;
+}
+
+.button-orange {
+  color: var(--white, #fff);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px; /* 150% */
+  margin-left: 50px;
+  display: flex;
+  width: 162px;
+  height: 40px;
+  padding: 10px 24px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: none;
+  background: var(--orange-orange-400, #ff9138);
+  box-shadow: 0px 0px 6px 0px #e7e9f2;
+}
+
+.button-confirm {
+  color: var(--white, #fff);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px; /* 150% */
+  display: flex;
+  width: 162px;
+  height: 40px;
+  padding: 10px 24px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: none;
+  background: var(--orange-orange-400, #ff9138);
+  box-shadow: 0px 0px 6px 0px #e7e9f2;
+}
+
+.button-white {
+  color: var(--orange-orange-400, #ff9138);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px; /* 150% */
+  display: flex;
+  width: 162px;
+  height: 40px;
+  padding: 10px 24px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: 2px solid var(--orange-orange-400, #ff9138);
+
+  box-shadow: 0px 0px 6px 0px #e7e9f2;
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Chiều cao tương đương toàn màn hình */
+}
+
+.app {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 3fr 4fr;
+}
