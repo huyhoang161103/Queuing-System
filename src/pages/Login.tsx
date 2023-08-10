@@ -30,7 +30,7 @@ const Login: React.FC = () => {
 
         if (userData.password === password) {
           dispatch(setUser(userData));
-          navigate("/home");
+          navigate("/dashboard");
         } else {
           setError("Sai mật khẩu hoặc tên đăng nhập");
           setShowErrorIcon(true); // Hiển thị biểu tượng lỗi khi có lỗi
