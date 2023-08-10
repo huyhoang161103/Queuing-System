@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import { Input, Select, Table } from "antd";
+import { DatePicker, DatePickerProps, Input, Select, Table } from "antd";
 import Navbar from "../components/navbar";
 import Header from "../components/header";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,7 +9,7 @@ import { RootState } from "../features/store";
 import { firestore } from "../firebase/config";
 import { Device, setDevices, setSelectedDevice } from "../features/deviceSlice";
 
-const Devices: React.FC = () => {
+const GiveNumber: React.FC = () => {
   const dispatch = useDispatch();
 
   const devices = useSelector((state: RootState) => state.devices.devices);
@@ -17,7 +17,7 @@ const Devices: React.FC = () => {
 
   const handleButtonAddClick = () => {
     // Thực hiện chuyển hướng đến trang EditDevice
-    navigate("/device/add");
+    navigate("/givenumber/newgivenumber");
   };
   const handleDeviceClick = (device: Device) => {
     dispatch(setSelectedDevice(device));
@@ -38,26 +38,26 @@ const Devices: React.FC = () => {
 
   const columns = [
     {
-      title: "Mã thiết bị",
+      title: "STT",
       dataIndex: "deviceCode",
       key: "deviceCode",
       className: "no-wrap",
     },
 
     {
-      title: "Tên thiết bị",
+      title: "Tên khách hàng",
       dataIndex: "deviceName",
       key: "deviceName",
       className: "no-wrap",
     },
     {
-      title: "Địa chỉ IP",
+      title: "Tên dịch vụ",
       dataIndex: "ipAddress",
       key: "ipAddress",
       className: "no-wrap",
     },
     {
-      title: "Trạng thái hoạt động",
+      title: "Thời gian cấp",
       dataIndex: "isActive",
       className: "no-wrap",
       key: "isActive",
@@ -82,7 +82,7 @@ const Devices: React.FC = () => {
       ),
     },
     {
-      title: "Trạng thái kết nối",
+      title: "Hạn sử dụng",
       dataIndex: "isConnected",
       className: "no-wrap",
       key: "isConnected",
@@ -108,33 +108,30 @@ const Devices: React.FC = () => {
     },
 
     {
-      title: "Dịch vụ sử dụng",
+      title: "Trạng thái",
       dataIndex: "service",
       key: "service",
       width: 300,
     },
     {
-      title: " ",
-      dataIndex: "detail",
-      key: "detail",
-      render: (text: string, record: Device) => (
-        <NavLink
-          className="no-wrap"
-          to={`/device/detail`}
-          onClick={() => handleDeviceClick(record)}
-        >
-          Chi tiết
-        </NavLink>
-      ),
+      title: "Nguồn cấp",
+      dataIndex: "ipAddress",
+      width: 300,
+      key: "service",
     },
 
     {
       title: " ",
       dataIndex: "edit",
+
       key: "edit",
-      render: () => (
-        <NavLink className="no-wrap" to={`/device/edit`}>
-          Chỉnh sửa
+      render: (text: string, record: Device) => (
+        <NavLink
+          className="no-wrap"
+          to={`/givenumber/detailgivenumber`}
+          onClick={() => handleDeviceClick(record)}
+        >
+          Chi tiết
         </NavLink>
       ),
     },
@@ -149,44 +146,89 @@ const Devices: React.FC = () => {
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
   };
+
+  const onChange: DatePickerProps["onChange"] = (date, dateString) => {
+    console.log(date, dateString);
+  };
   return (
     <div className="content">
       <Navbar />
       <div className="content-main">
         <Header />
         <div className="container-main">
-          <div className="title">Danh sách thiết bị</div>
+          <div className="title">Quản lý cấp số</div>
           <div className="status-search">
             <div className="status">
               <div className="pe-4">
-                <div>Trạng thái hoạt động</div>
+                <div>Tên dịch vụ</div>
                 <Select
                   size="large"
                   className="select-status"
                   defaultValue="Tất cả"
-                  style={{ width: 300 }}
+                  style={{ width: 150 }}
                   onChange={handleChange}
                   options={[
                     { value: "Tất cả", label: "Tất cả" },
-                    { value: "Hoạt động", label: "Hoạt động" },
-                    { value: "Ngưng hoạt động", label: "Ngưng hoạt động" },
+                    {
+                      value: "Khám sản - phụ khoa",
+                      label: "Khám sản - phụ khoa",
+                    },
+                    { value: "Khám răng hàm mặt", label: "Khám răng hàm mặt" },
+                    { value: "Khám tai mũi họng", label: "Khám tai mũi họng" },
                   ]}
                 />
               </div>
-              <div className="">
-                <div>Trạng thái kết nối </div>
+              <div className="pe-4">
+                <div>Tình trạng</div>
                 <Select
                   size="large"
                   className="select-status"
                   defaultValue="Tất cả"
-                  style={{ width: 300 }}
+                  style={{ width: 150 }}
                   onChange={handleChange}
                   options={[
                     { value: "Tất cả", label: "Tất cả" },
-                    { value: "Kết nối", label: "Kết nối" },
-                    { value: "Mất kết nối", label: "Mất kết nối" },
+                    { value: "Đang chờ", label: "Đang chờ" },
+                    { value: "Đã sử dụng", label: "Đã sử dụng" },
+                    { value: "Bỏ qua", label: "Bỏ qua" },
                   ]}
                 />
+              </div>
+              <div className="pe-4">
+                <div>Nguồn cấp</div>
+                <Select
+                  size="large"
+                  className="select-status"
+                  defaultValue="Tất cả"
+                  style={{ width: 150 }}
+                  onChange={handleChange}
+                  options={[
+                    { value: "Tất cả", label: "Tất cả" },
+                    { value: "Kiosk", label: "Kiosk" },
+                    { value: "Hệ thống", label: "Hệ thống" },
+                  ]}
+                />
+              </div>
+              <div className="pe-4">
+                <div>Chọn thời gian</div>
+                <div className="row">
+                  <div className="col">
+                    {" "}
+                    <DatePicker
+                      onChange={onChange}
+                      placeholder="Chọn ngày"
+                      size="large"
+                    />
+                  </div>
+                  <div className="col">
+                    {" "}
+                    <DatePicker
+                      onChange={onChange}
+                      placeholder="Chọn ngày"
+                      size="large"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
             <div className="search">
@@ -219,7 +261,7 @@ const Devices: React.FC = () => {
               <button className="button-add" onClick={handleButtonAddClick}>
                 <div className="col">
                   <Icon icon="basil:add-solid" className="button-icon" />
-                  <p>Thêm thiết bị</p>
+                  <p>Cấp số mới</p>
                 </div>
               </button>
             </div>
@@ -230,4 +272,4 @@ const Devices: React.FC = () => {
   );
 };
 
-export default Devices;
+export default GiveNumber;

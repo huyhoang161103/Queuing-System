@@ -26,6 +26,15 @@ const Header: React.FC = () => {
         Danh sách thiết bị
       </Breadcrumb.Item>
     );
+  } else if (location.pathname === "/service") {
+    breadcrumbItems.push(
+      <Breadcrumb.Item key="device" className="breadcrumb-item-1">
+        Dịch vụ
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="device-list" className="breadcrumb-item">
+        Danh sách dịch vụ
+      </Breadcrumb.Item>
+    );
   } else if (location.pathname === "/device/detail") {
     breadcrumbItems.push(
       <Breadcrumb.Item key="device" className="breadcrumb-item-1">
@@ -52,6 +61,99 @@ const Header: React.FC = () => {
       </Breadcrumb.Item>,
       <Breadcrumb.Item key="device-edit" className="breadcrumb-item">
         Cập nhật thiết bị
+      </Breadcrumb.Item>
+    );
+  } else if (location.pathname === "/device/add") {
+    breadcrumbItems.push(
+      <Breadcrumb.Item key="device" className="breadcrumb-item-1">
+        Thiết bị
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="device-list" className="breadcrumb-item-1">
+        <NavLink to={"/device"} className="breadcrumb-item-nav">
+          Danh sách thiết bị
+        </NavLink>
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="device-add" className="breadcrumb-item">
+        Thêm thiết bị
+      </Breadcrumb.Item>
+    );
+  } else if (location.pathname === "/service/add") {
+    breadcrumbItems.push(
+      <Breadcrumb.Item key="service" className="breadcrumb-item-1">
+        Dịch vụ
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="service-list" className="breadcrumb-item-1">
+        <NavLink to={"/service"} className="breadcrumb-item-nav">
+          Danh sách dịch vụ
+        </NavLink>
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="service-add" className="breadcrumb-item">
+        Thêm dịch vụ
+      </Breadcrumb.Item>
+    );
+  } else if (location.pathname === "/service/detail") {
+    breadcrumbItems.push(
+      <Breadcrumb.Item key="service" className="breadcrumb-item-1">
+        Dịch vụ
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="service-list" className="breadcrumb-item-1">
+        <NavLink to={"/service"} className="breadcrumb-item-nav">
+          Danh sách dịch vụ
+        </NavLink>
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="service-add" className="breadcrumb-item">
+        Chi tiết
+      </Breadcrumb.Item>
+    );
+  } else if (location.pathname === "/service/edit") {
+    breadcrumbItems.push(
+      <Breadcrumb.Item key="service" className="breadcrumb-item-1">
+        Dịch vụ
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="service-list" className="breadcrumb-item-1">
+        <NavLink to={"/service"} className="breadcrumb-item-nav">
+          Danh sách dịch vụ
+        </NavLink>
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="service-add" className="breadcrumb-item">
+        Cập nhật
+      </Breadcrumb.Item>
+    );
+  } else if (location.pathname === "/givenumber") {
+    breadcrumbItems.push(
+      <Breadcrumb.Item key="givenumber" className="breadcrumb-item-1">
+        Cấp số
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="givenumber-list" className="breadcrumb-item">
+        Danh sách cấp số
+      </Breadcrumb.Item>
+    );
+  } else if (location.pathname === "/givenumber/newgivenumber") {
+    breadcrumbItems.push(
+      <Breadcrumb.Item key="service" className="breadcrumb-item-1">
+        Cấp số
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="service-list" className="breadcrumb-item-1">
+        <NavLink to={"/givenumber"} className="breadcrumb-item-nav">
+          Danh sách cấp số
+        </NavLink>
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="service-add" className="breadcrumb-item">
+        Cấp số mới
+      </Breadcrumb.Item>
+    );
+  } else if (location.pathname === "/givenumber/detailgivenumber") {
+    breadcrumbItems.push(
+      <Breadcrumb.Item key="service" className="breadcrumb-item-1">
+        Cấp số
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="service-list" className="breadcrumb-item-1">
+        <NavLink to={"/givenumber"} className="breadcrumb-item-nav">
+          Danh sách cấp số
+        </NavLink>
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="service-add" className="breadcrumb-item">
+        Chi tiết
       </Breadcrumb.Item>
     );
   }

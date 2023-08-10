@@ -10,7 +10,7 @@ import { Device, setSelectedDevice } from "../features/deviceSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../features/store";
 
-const DetailDevice: React.FC = () => {
+const DetailGiveNumber: React.FC = () => {
   const dispatch = useDispatch();
 
   const selectedDevice = useSelector(
@@ -21,7 +21,7 @@ const DetailDevice: React.FC = () => {
 
   const handleButtonEditClick = () => {
     // Thực hiện chuyển hướng đến trang EditDevice
-    navigate("/device/edit");
+    navigate("/givenumber");
   };
 
   useEffect(() => {
@@ -53,22 +53,22 @@ const DetailDevice: React.FC = () => {
       <div className="content-main">
         <Header />
         <div className="container-main">
-          <div className="title">Quản lý thiết bị</div>
+          <div className="title">Quản lý cấp số</div>
           <div className="detail-button">
             <div className="detail-device">
               <div className="detail-device-content">
-                <div className="title-detail-device">Thông tin thiết bị</div>
+                <div className="title-detail-device">Thông tin cấp số</div>
                 <div className="row pt-4">
                   <div className="col">
                     <div className="row">
-                      <div className="col-3">Mã thiết bị:</div>
+                      <div className="col-3 label-text">Họ và tên:</div>
                       <div className="col">{selectedDevice.deviceCode}</div>
                     </div>
                   </div>
                   <div className="col">
                     {" "}
                     <div className="row">
-                      <div className="col-3">Loại thiết bị:</div>
+                      <div className="col-3 label-text">Nguồn cấp:</div>
                       <div className="col">{selectedDevice.deviceType}</div>
                     </div>
                   </div>
@@ -76,13 +76,13 @@ const DetailDevice: React.FC = () => {
                 <div className="row pt-4">
                   <div className="col">
                     <div className="row">
-                      <div className="col-3">Tên thiết bị:</div>
+                      <div className="col-3 label-text">Tên dịch vụ:</div>
                       <div className="col">{selectedDevice.deviceName}</div>
                     </div>
                   </div>
                   <div className="col">
                     <div className="row">
-                      <div className="col-3">Tên đăng nhập:</div>
+                      <div className="col-3 label-text">Trạng thái:</div>
                       <div className="col">1</div>
                     </div>
                   </div>
@@ -90,13 +90,13 @@ const DetailDevice: React.FC = () => {
                 <div className="row pt-4">
                   <div className="col">
                     <div className="row">
-                      <div className="col-3">Địa chỉ IP:</div>
+                      <div className="col-3 label-text">Số thứ tự:</div>
                       <div className="col">{selectedDevice.ipAddress}</div>
                     </div>
                   </div>
                   <div className="col">
                     <div className="row">
-                      <div className="col-3">Mật khẩu:</div>
+                      <div className="col-3 label-text">Số điện thoại:</div>
                       <div className="col">1</div>
                     </div>
                   </div>
@@ -104,17 +104,32 @@ const DetailDevice: React.FC = () => {
                 <div className="row pt-4">
                   <div className="col">
                     <div className="row">
-                      <div className="">Dịch vụ sử dụng:</div>
-                      <div className="pt-2">{selectedDevice.service}</div>
+                      <div className="col-3 label-text">Thời gian cấp:</div>
+                      <div className="col">10/09/2023</div>
                     </div>
                   </div>
+                  <div className="col">
+                    <div className="row">
+                      <div className="col-3 label-text">Địa chỉ email:</div>
+                      <div className="col">aaa@gmail.com</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="row pt-4">
+                  <div className="col">
+                    <div className="row">
+                      <div className="col-3 label-text">Hạn sử dụng:</div>
+                      <div className="col">10/09/2023</div>
+                    </div>
+                  </div>
+                  <div className="col"></div>
                 </div>
               </div>
             </div>
             <button className="button-add" onClick={handleButtonEditClick}>
               <div className="col">
-                <Icon icon="fa6-solid:square-pen" className="button-icon" />
-                <p>Cập nhật thiết bị</p>
+                <Icon icon="system-uicons:wrap-back" className="button-icon" />
+                <p>Quay lại</p>
               </div>
             </button>
           </div>
@@ -124,4 +139,4 @@ const DetailDevice: React.FC = () => {
   );
 };
 
-export default DetailDevice;
+export default DetailGiveNumber;

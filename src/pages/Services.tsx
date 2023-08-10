@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import { Input, Select, Table } from "antd";
+import { DatePicker, DatePickerProps, Input, Select, Table } from "antd";
 import Navbar from "../components/navbar";
 import Header from "../components/header";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,19 +9,16 @@ import { RootState } from "../features/store";
 import { firestore } from "../firebase/config";
 import { Device, setDevices, setSelectedDevice } from "../features/deviceSlice";
 
-const Devices: React.FC = () => {
+const Services: React.FC = () => {
   const dispatch = useDispatch();
 
   const devices = useSelector((state: RootState) => state.devices.devices);
   const navigate = useNavigate(); // Sử dụng hook useNavigate thay vì useHistory
 
   const handleButtonAddClick = () => {
-    // Thực hiện chuyển hướng đến trang EditDevice
-    navigate("/device/add");
+    navigate("/service/add");
   };
-  const handleDeviceClick = (device: Device) => {
-    dispatch(setSelectedDevice(device));
-  };
+
   useEffect(() => {
     const fetchDevices = async () => {
       try {
@@ -38,29 +35,33 @@ const Devices: React.FC = () => {
 
   const columns = [
     {
-      title: "Mã thiết bị",
+      title: "Mã dịch vụ",
       dataIndex: "deviceCode",
       key: "deviceCode",
       className: "no-wrap",
+      width: 300,
     },
 
     {
-      title: "Tên thiết bị",
+      title: "Tên dịch vụ",
       dataIndex: "deviceName",
       key: "deviceName",
       className: "no-wrap",
+      width: 300,
     },
     {
-      title: "Địa chỉ IP",
+      title: "Mô tả",
       dataIndex: "ipAddress",
       key: "ipAddress",
       className: "no-wrap",
+      width: 300,
     },
     {
       title: "Trạng thái hoạt động",
       dataIndex: "isActive",
       className: "no-wrap",
       key: "isActive",
+      width: 300,
       render: (isActive: boolean) => (
         <div
           style={{
@@ -81,48 +82,14 @@ const Devices: React.FC = () => {
         </div>
       ),
     },
-    {
-      title: "Trạng thái kết nối",
-      dataIndex: "isConnected",
-      className: "no-wrap",
-      key: "isConnected",
-      render: (isConnected: boolean) => (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              width: "12px",
-              height: "12px",
-              borderRadius: "50%",
-              backgroundColor: isConnected ? "#35C75A" : "#E73F3F",
-              marginRight: "5px",
-            }}
-          ></div>
-          {isConnected ? "Kết nối" : "Mất kết nối"}
-        </div>
-      ),
-    },
 
-    {
-      title: "Dịch vụ sử dụng",
-      dataIndex: "service",
-      key: "service",
-      width: 300,
-    },
     {
       title: " ",
       dataIndex: "detail",
       key: "detail",
+      width: 300,
       render: (text: string, record: Device) => (
-        <NavLink
-          className="no-wrap"
-          to={`/device/detail`}
-          onClick={() => handleDeviceClick(record)}
-        >
+        <NavLink className="no-wrap" to={`/service/detail`}>
           Chi tiết
         </NavLink>
       ),
@@ -132,8 +99,9 @@ const Devices: React.FC = () => {
       title: " ",
       dataIndex: "edit",
       key: "edit",
+      width: 300,
       render: () => (
-        <NavLink className="no-wrap" to={`/device/edit`}>
+        <NavLink className="no-wrap" to={`/service/edit`}>
           Chỉnh sửa
         </NavLink>
       ),
@@ -149,13 +117,17 @@ const Devices: React.FC = () => {
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
   };
+
+  const onChange: DatePickerProps["onChange"] = (date, dateString) => {
+    console.log(date, dateString);
+  };
   return (
     <div className="content">
       <Navbar />
       <div className="content-main">
         <Header />
         <div className="container-main">
-          <div className="title">Danh sách thiết bị</div>
+          <div className="title">Quản lý dịch vụ</div>
           <div className="status-search">
             <div className="status">
               <div className="pe-4">
@@ -174,19 +146,25 @@ const Devices: React.FC = () => {
                 />
               </div>
               <div className="">
-                <div>Trạng thái kết nối </div>
-                <Select
-                  size="large"
-                  className="select-status"
-                  defaultValue="Tất cả"
-                  style={{ width: 300 }}
-                  onChange={handleChange}
-                  options={[
-                    { value: "Tất cả", label: "Tất cả" },
-                    { value: "Kết nối", label: "Kết nối" },
-                    { value: "Mất kết nối", label: "Mất kết nối" },
-                  ]}
-                />
+                <div>Chọn thời gian</div>
+                <div className="row">
+                  <div className="col">
+                    {" "}
+                    <DatePicker
+                      onChange={onChange}
+                      placeholder="Chọn ngày"
+                      size="large"
+                    />
+                  </div>
+                  <div className="col">
+                    {" "}
+                    <DatePicker
+                      onChange={onChange}
+                      placeholder="Chọn ngày"
+                      size="large"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
             <div className="search">
@@ -219,7 +197,7 @@ const Devices: React.FC = () => {
               <button className="button-add" onClick={handleButtonAddClick}>
                 <div className="col">
                   <Icon icon="basil:add-solid" className="button-icon" />
-                  <p>Thêm thiết bị</p>
+                  <p>Thêm dịch vụ</p>
                 </div>
               </button>
             </div>
@@ -230,4 +208,4 @@ const Devices: React.FC = () => {
   );
 };
 
-export default Devices;
+export default Services;

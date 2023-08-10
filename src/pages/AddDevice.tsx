@@ -1,20 +1,22 @@
-import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { Input, Select, Space } from "antd";
 import "./pages.css";
-import firebase from "firebase/compat";
 import Navbar from "../components/navbar";
 import Header from "../components/header";
 import { Icon } from "@iconify/react";
+import { firestore } from "../firebase/config";
+import { Device, setSelectedDevice } from "../features/deviceSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../features/store";
 
-const EditDevice: React.FC = () => {
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
-  };
-
+const AddDevice: React.FC = () => {
   const { Option } = Select;
 
   const handleSelectChange = (value: string[]) => {
+    console.log(`selected ${value}`);
+  };
+  const handleChange = (value: string) => {
     console.log(`selected ${value}`);
   };
   return (
@@ -46,8 +48,19 @@ const EditDevice: React.FC = () => {
                         Loại thiết bị:<span className="red">*</span>
                       </div>
                       <div className="mt-2">
-                        {" "}
-                        <Input></Input>
+                        <Select
+                          style={{ width: "100%" }}
+                          className="select-status"
+                          placeholder="Chọn loại thiết bị"
+                          onChange={handleChange}
+                          options={[
+                            { value: "Kiosk", label: "Kiosk" },
+                            {
+                              value: "Display counter",
+                              label: "Display counter",
+                            },
+                          ]}
+                        />
                       </div>
                     </div>
                   </div>
@@ -137,4 +150,4 @@ const EditDevice: React.FC = () => {
   );
 };
 
-export default EditDevice;
+export default AddDevice;

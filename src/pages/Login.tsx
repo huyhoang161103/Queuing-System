@@ -111,7 +111,14 @@ const Login: React.FC = () => {
         </div>
       </div>
       <div className="centered">
-        <img src="/img/Group341.png" alt="" />
+        <div className="img-login">
+          <img src="/img/Group341.png" alt="" />
+        </div>
+
+        <div className="name-web">
+          <div className="text1">Hệ thống</div>
+          <div className="text2">QUẢN LÝ XẾP HÀNG</div>
+        </div>
       </div>
     </div>
   );

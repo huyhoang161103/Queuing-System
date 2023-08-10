@@ -52,7 +52,7 @@ const Navbar: React.FC = () => {
             <Menu.Item
               key="services"
               className={`menu-item ${
-                selectedMenuItem === "/service" ? "selected" : ""
+                selectedMenuItem.startsWith("/service") ? "selected" : ""
               }`}
             >
               <NavLink to="/service">
@@ -61,12 +61,12 @@ const Navbar: React.FC = () => {
             </Menu.Item>
 
             <Menu.Item
-              key="levels"
+              key="givenumber"
               className={`menu-item ${
-                selectedMenuItem === "/levels" ? "selected" : ""
+                selectedMenuItem.startsWith("/givenumber") ? "selected" : ""
               }`}
             >
-              <NavLink to="/levels">
+              <NavLink to="/givenumber">
                 <Icon icon="lucide:layers" /> Cấp số
               </NavLink>
             </Menu.Item>
