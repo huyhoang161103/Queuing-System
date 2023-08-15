@@ -228,6 +228,10 @@
   padding: 16px 24px;
 }
 
+.detail-user-content {
+  padding: 40px 24px;
+}
+
 .title-detail-device {
   color: var(--orange-orange-500, #ff7506);
 
@@ -356,6 +360,17 @@
   box-shadow: 2px 2px 8px 0px rgba(232, 239, 244, 0.8);
   width: 1230px;
   height: 550px;
+  flex-shrink: 0;
+}
+
+.detail-user {
+  border-radius: 16px;
+  background: var(--white, #fff);
+  margin-top: 80px;
+  margin-right: 24px;
+  box-shadow: 2px 2px 8px 0px rgba(232, 239, 244, 0.8);
+  width: 1190px;
+  height: 350px;
   flex-shrink: 0;
 }
 
@@ -509,4 +524,21 @@
 
 .custom-modal .ant-modal-content {
   padding: 0 !important;
+}
+
+.user-avatar {
+  width: 250px;
+  height: 250px;
+  border-radius: 100%;
+}
+
+.user-name-1 {
+  color: var(--gray-gray-500, #282739);
+
+  /* 24/24 Bold */
+  font-family: "Nunito", sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 36px; /* 150% */
 }

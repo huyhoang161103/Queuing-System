@@ -22,6 +22,7 @@ import GiveNumber from "./pages/GiveNumber";
 import NewGiveNumber from "./pages/NewGiveNumber";
 import DetailGiveNumber from "./pages/DetailGiveNumber";
 import Reports from "./pages/Report";
+import UserInfor from "./pages/UserInfor";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Routes>
           <Route path="/*" element={<Login />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/userinfor" element={<UserInfor />} />
           <Route path="/dashboard" element={<DashBoard />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/menu" element={<MenuTest />} />

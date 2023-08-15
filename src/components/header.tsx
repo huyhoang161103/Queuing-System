@@ -17,6 +17,12 @@ const Header: React.FC = () => {
         Dashboard
       </Breadcrumb.Item>
     );
+  } else if (location.pathname === "/userinfor") {
+    breadcrumbItems.push(
+      <Breadcrumb.Item key="device" className="breadcrumb-item">
+        Thông tin cá nhân
+      </Breadcrumb.Item>
+    );
   } else if (location.pathname === "/device") {
     breadcrumbItems.push(
       <Breadcrumb.Item key="device" className="breadcrumb-item-1">
@@ -177,14 +183,18 @@ const Header: React.FC = () => {
         <div className="info">
           {currentUser ? (
             <React.Fragment>
-              <Avatar
-                src={currentUser.avatarUser}
-                alt="User Avatar"
-                className="avt"
-              />
+              <NavLink to="/userinfor" className="nav-link">
+                <Avatar
+                  src={currentUser.avatarUser}
+                  alt="User Avatar"
+                  className="avt"
+                />
+              </NavLink>
               <div className="welcome">
                 <span className="welcome-text">Xin chào</span> <br />
-                <span className="user-name">{currentUser.name}</span>
+                <NavLink to="/userinfor" className="nav-link">
+                  <span className="user-name">{currentUser.name}</span>
+                </NavLink>
               </div>
             </React.Fragment>
           ) : (
