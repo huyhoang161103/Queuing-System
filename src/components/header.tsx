@@ -156,6 +156,15 @@ const Header: React.FC = () => {
         Chi tiết
       </Breadcrumb.Item>
     );
+  } else if (location.pathname === "/reports") {
+    breadcrumbItems.push(
+      <Breadcrumb.Item key="reports" className="breadcrumb-item-1">
+        Báo cáo
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="reports-list" className="breadcrumb-item">
+        Lập báo cáo
+      </Breadcrumb.Item>
+    );
   }
 
   return (

@@ -21,6 +21,7 @@ import DetailService from "./pages/DetailService";
 import GiveNumber from "./pages/GiveNumber";
 import NewGiveNumber from "./pages/NewGiveNumber";
 import DetailGiveNumber from "./pages/DetailGiveNumber";
+import Reports from "./pages/Report";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
             path="/givenumber/detailgivenumber"
             element={<DetailGiveNumber />}
           />
+          <Route path="/reports" element={<Reports />} />
         </Routes>
       </PersistGate>
     </Provider>

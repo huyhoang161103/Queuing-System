@@ -5,67 +5,63 @@ import "./pages.css";
 import Navbar from "../components/navbar";
 import Header from "../components/header";
 import { Icon } from "@iconify/react";
-import { firestore } from "../firebase/config";
-import { Device, setSelectedDevice } from "../features/deviceSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../features/store";
+import { setSelectedService } from "../features/serviceSlice";
 
 const DetailService: React.FC = () => {
   const columns = [
     {
       title: "Số thứ tự",
-      dataIndex: "deviceCode",
-      key: "deviceCode",
+      dataIndex: "serviceCode",
+      key: "serviceCode",
       className: "no-wrap",
       width: 300,
     },
 
     {
       title: "Trạng thái",
-      dataIndex: "deviceName",
-      key: "deviceName",
+      dataIndex: "serviceCode",
+      key: "serviceCode",
       className: "no-wrap",
       width: 300,
     },
   ];
   const dispatch = useDispatch();
 
-  const selectedDevice = useSelector(
-    (state: RootState) => state.devices.selectedDevice
+  const selectedService = useSelector(
+    (state: RootState) => state.services.selectedService
   );
 
   const navigate = useNavigate();
 
   const handleButtonEditClick = () => {
-    // Thực hiện chuyển hướng đến trang EditDevice
     navigate("/service/edit");
   };
 
   const handleButtonBackClick = () => {
-    // Thực hiện chuyển hướng đến trang EditDevice
     navigate("/service");
   };
 
   useEffect(() => {
-    const fetchDeviceDetails = async () => {
-      if (selectedDevice) {
+    const fetchServiceDetails = async () => {
+      if (selectedService) {
         try {
-          // Replace this with your actual API endpoint to fetch device details
           const response = await fetch(
-            `/api/devices/${selectedDevice.deviceCode}`
+            `/api/services/${selectedService.serviceCode}`
           );
-          const deviceDetails = await response.json();
-          dispatch(setSelectedDevice(deviceDetails));
+          const serviceDetails = await response.json();
+          dispatch(setSelectedService(serviceDetails));
         } catch (error) {
-          console.error("Error fetching device details:", error);
+          console.error("Error:", error);
         }
       }
     };
 
-    fetchDeviceDetails();
-  }, [dispatch, selectedDevice]);
+    fetchServiceDetails();
+  }, [dispatch, selectedService]);
 
-  if (!selectedDevice) {
+  if (!selectedService) {
     return <div>Loading...</div>;
   }
   const handleChange = (value: string) => {
@@ -90,8 +86,8 @@ const DetailService: React.FC = () => {
                   <div className="row pt-4">
                     <div className="col">
                       <div className="row">
-                        <div className="col">Mã dịch vụ:</div>
-                        <div className="col">{selectedDevice.deviceCode}</div>
+                        <div className="col label-text">Mã dịch vụ:</div>
+                        <div className="col">{selectedService.serviceCode}</div>
                       </div>
                     </div>
                   </div>
@@ -99,7 +95,7 @@ const DetailService: React.FC = () => {
                     <div className="col">
                       <div className="row">
                         <div className="col">Tên dịch vụ:</div>
-                        <div className="col">{selectedDevice.deviceName}</div>
+                        <div className="col">{selectedService.serviceName}</div>
                       </div>
                     </div>
                   </div>
@@ -108,7 +104,7 @@ const DetailService: React.FC = () => {
                     <div className="col">
                       <div className="row">
                         <div className="col">Mô tả:</div>
-                        <div className="col">{selectedDevice.deviceName}</div>
+                        <div className="col">{selectedService.description}</div>
                       </div>
                     </div>
                   </div>

@@ -28,7 +28,6 @@ const DetailDevice: React.FC = () => {
     const fetchDeviceDetails = async () => {
       if (selectedDevice) {
         try {
-          // Replace this with your actual API endpoint to fetch device details
           const response = await fetch(
             `/api/devices/${selectedDevice.deviceCode}`
           );
@@ -61,14 +60,14 @@ const DetailDevice: React.FC = () => {
                 <div className="row pt-4">
                   <div className="col">
                     <div className="row">
-                      <div className="col-3">Mã thiết bị:</div>
+                      <div className="col-3 label-text">Mã thiết bị:</div>
                       <div className="col">{selectedDevice.deviceCode}</div>
                     </div>
                   </div>
                   <div className="col">
                     {" "}
                     <div className="row">
-                      <div className="col-3">Loại thiết bị:</div>
+                      <div className="col-3 label-text">Loại thiết bị:</div>
                       <div className="col">{selectedDevice.deviceType}</div>
                     </div>
                   </div>
@@ -76,13 +75,13 @@ const DetailDevice: React.FC = () => {
                 <div className="row pt-4">
                   <div className="col">
                     <div className="row">
-                      <div className="col-3">Tên thiết bị:</div>
+                      <div className="col-3 label-text">Tên thiết bị:</div>
                       <div className="col">{selectedDevice.deviceName}</div>
                     </div>
                   </div>
                   <div className="col">
                     <div className="row">
-                      <div className="col-3">Tên đăng nhập:</div>
+                      <div className="col-3 label-text">Tên đăng nhập:</div>
                       <div className="col">1</div>
                     </div>
                   </div>
@@ -90,13 +89,13 @@ const DetailDevice: React.FC = () => {
                 <div className="row pt-4">
                   <div className="col">
                     <div className="row">
-                      <div className="col-3">Địa chỉ IP:</div>
+                      <div className="col-3 label-text">Địa chỉ IP:</div>
                       <div className="col">{selectedDevice.ipAddress}</div>
                     </div>
                   </div>
                   <div className="col">
                     <div className="row">
-                      <div className="col-3">Mật khẩu:</div>
+                      <div className="col-3 label-text">Mật khẩu:</div>
                       <div className="col">1</div>
                     </div>
                   </div>
@@ -104,7 +103,7 @@ const DetailDevice: React.FC = () => {
                 <div className="row pt-4">
                   <div className="col">
                     <div className="row">
-                      <div className="">Dịch vụ sử dụng:</div>
+                      <div className="label-text">Dịch vụ sử dụng:</div>
                       <div className="pt-2">{selectedDevice.service}</div>
                     </div>
                   </div>

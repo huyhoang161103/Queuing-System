@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { Input, Select, Table } from "antd";
@@ -7,8 +7,20 @@ import Header from "../components/header";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../features/store";
 import { firestore } from "../firebase/config";
-import { Device, setDevices, setSelectedDevice } from "../features/deviceSlice";
+import {
+  Device,
+  setCurrentPage,
+  setDevices,
+  setSelectedDevice,
+} from "../features/deviceSlice";
 
+type TablePaginationPosition =
+  | "topLeft"
+  | "topCenter"
+  | "topRight"
+  | "bottomLeft"
+  | "bottomCenter"
+  | "bottomRight";
 const Devices: React.FC = () => {
   const dispatch = useDispatch();
 
@@ -132,23 +144,67 @@ const Devices: React.FC = () => {
       title: " ",
       dataIndex: "edit",
       key: "edit",
-      render: () => (
-        <NavLink className="no-wrap" to={`/device/edit`}>
+      render: (text: string, record: Device) => (
+        <NavLink
+          className="no-wrap"
+          to={`/device/edit`}
+          onClick={() => handleDeviceClick(record)}
+        >
           Chỉnh sửa
         </NavLink>
       ),
     },
   ];
-
   const calculateIndex = (index: number): number => index + 1;
+  const [activeStatusFilter, setActiveStatusFilter] = useState("Tất cả");
+  const [connectionStatusFilter, setConnectionStatusFilter] =
+    useState("Tất cả");
+  const [searchKeyword, setSearchKeyword] = useState("");
 
-  const dataSource = devices.map((device, index) => ({
+  const handleSearchKeywordChange = (value: string) => {
+    setSearchKeyword(value);
+  };
+
+  const handleChangeActiveStatusFilter = (value: string) => {
+    setActiveStatusFilter(value);
+  };
+
+  const handleChangeConnectionStatusFilter = (value: string) => {
+    setConnectionStatusFilter(value);
+  };
+
+  const filteredDevices = devices.filter((device) => {
+    const isActiveFilter =
+      activeStatusFilter === "Tất cả" ||
+      (activeStatusFilter === "Hoạt động" && device.isActive) ||
+      (activeStatusFilter === "Ngưng hoạt động" && !device.isActive);
+
+    const isConnectionFilter =
+      connectionStatusFilter === "Tất cả" ||
+      (connectionStatusFilter === "Kết nối" && device.isConnected) ||
+      (connectionStatusFilter === "Mất kết nối" && !device.isConnected);
+
+    const searchFilter =
+      searchKeyword === "" ||
+      device.deviceCode.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      device.deviceName.toLowerCase().includes(searchKeyword.toLowerCase());
+    return isActiveFilter && isConnectionFilter && searchFilter;
+  });
+
+  const dataSource = filteredDevices.map((device, index) => ({
     ...device,
     index: calculateIndex(index),
   }));
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
+  const rowsPerPage = 5;
+  const currentPage = useSelector(
+    (state: RootState) => state.devices.currentPage
+  );
+  const handlePageChange = (page: number) => {
+    dispatch(setCurrentPage(page));
   };
+
+  const startIndex: number = (currentPage - 1) * rowsPerPage;
+  const [bottom] = useState<TablePaginationPosition>("bottomRight");
   return (
     <div className="content">
       <Navbar />
@@ -161,11 +217,11 @@ const Devices: React.FC = () => {
               <div className="pe-4">
                 <div>Trạng thái hoạt động</div>
                 <Select
+                  onChange={handleChangeActiveStatusFilter}
                   size="large"
                   className="select-status"
                   defaultValue="Tất cả"
                   style={{ width: 300 }}
-                  onChange={handleChange}
                   options={[
                     { value: "Tất cả", label: "Tất cả" },
                     { value: "Hoạt động", label: "Hoạt động" },
@@ -180,7 +236,7 @@ const Devices: React.FC = () => {
                   className="select-status"
                   defaultValue="Tất cả"
                   style={{ width: 300 }}
-                  onChange={handleChange}
+                  onChange={handleChangeConnectionStatusFilter}
                   options={[
                     { value: "Tất cả", label: "Tất cả" },
                     { value: "Kết nối", label: "Kết nối" },
@@ -198,6 +254,8 @@ const Devices: React.FC = () => {
                     type="text"
                     className="form-control"
                     placeholder="Nhập từ khóa"
+                    value={searchKeyword}
+                    onChange={(e) => handleSearchKeywordChange(e.target.value)}
                   />
                   <Icon
                     icon="iconamoon:search"
@@ -212,7 +270,14 @@ const Devices: React.FC = () => {
               <Table
                 columns={columns}
                 dataSource={dataSource}
-                pagination={false}
+                pagination={{
+                  position: [bottom],
+                  current: currentPage,
+                  pageSize: rowsPerPage,
+                  total: filteredDevices.length,
+                  onChange: handlePageChange,
+                  className: "custom-pagination",
+                }}
               />
             </div>
             <div>

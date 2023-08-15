@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { DatePicker, DatePickerProps, Input, Select, Table } from "antd";
@@ -7,52 +7,68 @@ import Header from "../components/header";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../features/store";
 import { firestore } from "../firebase/config";
-import { Device, setDevices, setSelectedDevice } from "../features/deviceSlice";
+import {
+  Service,
+  setSelectedService,
+  setServices,
+} from "../features/serviceSlice";
+import { setCurrentPage } from "../features/deviceSlice";
 
+type TablePaginationPosition =
+  | "topLeft"
+  | "topCenter"
+  | "topRight"
+  | "bottomLeft"
+  | "bottomCenter"
+  | "bottomRight";
 const Services: React.FC = () => {
   const dispatch = useDispatch();
 
-  const devices = useSelector((state: RootState) => state.devices.devices);
-  const navigate = useNavigate(); // Sử dụng hook useNavigate thay vì useHistory
+  const services = useSelector((state: RootState) => state.services.services);
+  const navigate = useNavigate();
 
   const handleButtonAddClick = () => {
     navigate("/service/add");
   };
+  const handleServiceClick = (service: Service) => {
+    dispatch(setSelectedService(service));
+  };
 
   useEffect(() => {
-    const fetchDevices = async () => {
+    const fetchServices = async () => {
+      // Thay thế fetchDevices bằng fetchServices
       try {
-        const snapshot = await firestore.collection("devices").get();
-        const deviceData = snapshot.docs.map((doc) => doc.data() as Device);
-        dispatch(setDevices(deviceData));
+        const snapshot = await firestore.collection("services").get();
+        const serviceData = snapshot.docs.map((doc) => doc.data() as Service);
+        dispatch(setServices(serviceData));
       } catch (error) {
-        console.error("Error fetching devices:", error);
+        console.error("Error fetching services:", error);
       }
     };
 
-    fetchDevices();
+    fetchServices();
   }, [dispatch]);
 
   const columns = [
     {
       title: "Mã dịch vụ",
-      dataIndex: "deviceCode",
-      key: "deviceCode",
+      dataIndex: "serviceCode",
+      key: "serviceCode",
       className: "no-wrap",
       width: 300,
     },
 
     {
       title: "Tên dịch vụ",
-      dataIndex: "deviceName",
-      key: "deviceName",
+      dataIndex: "serviceName",
+      key: "serviceName",
       className: "no-wrap",
       width: 300,
     },
     {
       title: "Mô tả",
-      dataIndex: "ipAddress",
-      key: "ipAddress",
+      dataIndex: "description",
+      key: "description",
       className: "no-wrap",
       width: 300,
     },
@@ -88,8 +104,12 @@ const Services: React.FC = () => {
       dataIndex: "detail",
       key: "detail",
       width: 300,
-      render: (text: string, record: Device) => (
-        <NavLink className="no-wrap" to={`/service/detail`}>
+      render: (text: string, record: Service) => (
+        <NavLink
+          className="no-wrap"
+          to={`/service/detail`}
+          onClick={() => handleServiceClick(record)}
+        >
           Chi tiết
         </NavLink>
       ),
@@ -100,8 +120,12 @@ const Services: React.FC = () => {
       dataIndex: "edit",
       key: "edit",
       width: 300,
-      render: () => (
-        <NavLink className="no-wrap" to={`/service/edit`}>
+      render: (text: string, record: Service) => (
+        <NavLink
+          className="no-wrap"
+          to={`/service/edit`}
+          onClick={() => handleServiceClick(record)}
+        >
           Chỉnh sửa
         </NavLink>
       ),
@@ -110,8 +134,40 @@ const Services: React.FC = () => {
 
   const calculateIndex = (index: number): number => index + 1;
 
-  const dataSource = devices.map((device, index) => ({
-    ...device,
+  const [activeStatusFilter, setActiveStatusFilter] = useState("Tất cả");
+
+  const [connectionStatusFilter, setConnectionStatusFilter] =
+    useState("Tất cả");
+
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  const handleSearchKeywordChange = (value: string) => {
+    setSearchKeyword(value);
+  };
+
+  const handleChangeActiveStatusFilter = (value: string) => {
+    setActiveStatusFilter(value);
+  };
+
+  const handleChangeConnectionStatusFilter = (value: string) => {
+    setConnectionStatusFilter(value);
+  };
+
+  const filteredServices = services.filter((service) => {
+    const isActiveFilter =
+      activeStatusFilter === "Tất cả" ||
+      (activeStatusFilter === "Hoạt động" && service.isActive) ||
+      (activeStatusFilter === "Ngưng hoạt động" && !service.isActive);
+
+    const searchFilter =
+      searchKeyword === "" ||
+      service.serviceCode.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      service.serviceName.toLowerCase().includes(searchKeyword.toLowerCase());
+    return isActiveFilter && searchFilter;
+  });
+
+  const dataSource = filteredServices.map((service, index) => ({
+    ...service,
     index: calculateIndex(index),
   }));
   const handleChange = (value: string) => {
@@ -121,6 +177,17 @@ const Services: React.FC = () => {
   const onChange: DatePickerProps["onChange"] = (date, dateString) => {
     console.log(date, dateString);
   };
+
+  const rowsPerPage = 5;
+  const currentPage = useSelector(
+    (state: RootState) => state.devices.currentPage
+  );
+  const handlePageChange = (page: number) => {
+    dispatch(setCurrentPage(page));
+  };
+
+  const startIndex: number = (currentPage - 1) * rowsPerPage;
+  const [bottom] = useState<TablePaginationPosition>("bottomRight");
   return (
     <div className="content">
       <Navbar />
@@ -133,11 +200,11 @@ const Services: React.FC = () => {
               <div className="pe-4">
                 <div>Trạng thái hoạt động</div>
                 <Select
+                  onChange={handleChangeActiveStatusFilter}
                   size="large"
                   className="select-status"
                   defaultValue="Tất cả"
                   style={{ width: 300 }}
-                  onChange={handleChange}
                   options={[
                     { value: "Tất cả", label: "Tất cả" },
                     { value: "Hoạt động", label: "Hoạt động" },
@@ -172,6 +239,8 @@ const Services: React.FC = () => {
               <div className="search-filter">
                 <div className="search-ticket">
                   <Input
+                    value={searchKeyword}
+                    onChange={(e) => handleSearchKeywordChange(e.target.value)}
                     style={{ width: 300, height: 40 }}
                     type="text"
                     className="form-control"
@@ -190,7 +259,14 @@ const Services: React.FC = () => {
               <Table
                 columns={columns}
                 dataSource={dataSource}
-                pagination={false}
+                pagination={{
+                  position: [bottom],
+                  current: currentPage,
+                  pageSize: rowsPerPage,
+                  total: filteredServices.length,
+                  onChange: handlePageChange,
+                  className: "custom-pagination",
+                }}
               />
             </div>
             <div>

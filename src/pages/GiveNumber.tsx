@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { DatePicker, DatePickerProps, Input, Select, Table } from "antd";
@@ -7,117 +7,145 @@ import Header from "../components/header";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../features/store";
 import { firestore } from "../firebase/config";
-import { Device, setDevices, setSelectedDevice } from "../features/deviceSlice";
+import {
+  GiveNumber,
+  setCurrentPage,
+  setGiveNumber,
+  setSelectedGiveNumber,
+} from "../features/giveNumberSlice";
 
-const GiveNumber: React.FC = () => {
+type TablePaginationPosition =
+  | "topLeft"
+  | "topCenter"
+  | "topRight"
+  | "bottomLeft"
+  | "bottomCenter"
+  | "bottomRight";
+
+const GiveNumbers: React.FC = () => {
   const dispatch = useDispatch();
 
-  const devices = useSelector((state: RootState) => state.devices.devices);
-  const navigate = useNavigate(); // Sử dụng hook useNavigate thay vì useHistory
+  const giveNumber = useSelector(
+    (state: RootState) => state.giveNumber.giveNumber
+  );
+  const navigate = useNavigate();
 
   const handleButtonAddClick = () => {
-    // Thực hiện chuyển hướng đến trang EditDevice
     navigate("/givenumber/newgivenumber");
   };
-  const handleDeviceClick = (device: Device) => {
-    dispatch(setSelectedDevice(device));
+
+  const handleDeviceClick = (giveNumber: GiveNumber) => {
+    dispatch(setSelectedGiveNumber(giveNumber));
   };
+
   useEffect(() => {
-    const fetchDevices = async () => {
+    const fetchGiveNumber = async () => {
       try {
-        const snapshot = await firestore.collection("devices").get();
-        const deviceData = snapshot.docs.map((doc) => doc.data() as Device);
-        dispatch(setDevices(deviceData));
+        const snapshot = await firestore.collection("giveNumber").get();
+        const giveNumberData = snapshot.docs.map(
+          (doc) => doc.data() as GiveNumber
+        );
+        dispatch(setGiveNumber(giveNumberData));
       } catch (error) {
-        console.error("Error fetching devices:", error);
+        console.error("Error fetching :", error);
       }
     };
 
-    fetchDevices();
+    fetchGiveNumber();
   }, [dispatch]);
 
   const columns = [
     {
       title: "STT",
-      dataIndex: "deviceCode",
-      key: "deviceCode",
+      dataIndex: "stt",
+      key: "stt",
       className: "no-wrap",
     },
 
     {
       title: "Tên khách hàng",
-      dataIndex: "deviceName",
-      key: "deviceName",
+      dataIndex: "name",
+      key: "name",
       className: "no-wrap",
+      width: 200,
     },
     {
       title: "Tên dịch vụ",
-      dataIndex: "ipAddress",
-      key: "ipAddress",
+      dataIndex: "serviceName",
+      key: "serviceName",
       className: "no-wrap",
+      width: 200,
     },
     {
       title: "Thời gian cấp",
-      dataIndex: "isActive",
+      key: "issuanceDateTime",
       className: "no-wrap",
-      key: "isActive",
-      render: (isActive: boolean) => (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              width: "12px",
-              height: "12px",
-              borderRadius: "50%",
-              backgroundColor: isActive ? "#35C75A" : "#E73F3F",
-              marginRight: "5px",
-            }}
-          ></div>
-          {isActive ? "Hoạt động" : "Ngưng hoạt động"}
-        </div>
-      ),
+      width: 200,
+      render: (text: any, record: { issuanceDate: any; issuanceTime: any }) => {
+        const issuanceDate = record.issuanceDate;
+        const issuanceTime = record.issuanceTime;
+        const issuanceDateTime = `${issuanceTime} ${issuanceDate}`;
+        return <div className="table-cell-content">{issuanceDateTime}</div>;
+      },
     },
     {
       title: "Hạn sử dụng",
-      dataIndex: "isConnected",
+      key: "expirationDateTime",
       className: "no-wrap",
-      key: "isConnected",
-      render: (isConnected: boolean) => (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              width: "12px",
-              height: "12px",
-              borderRadius: "50%",
-              backgroundColor: isConnected ? "#35C75A" : "#E73F3F",
-              marginRight: "5px",
-            }}
-          ></div>
-          {isConnected ? "Kết nối" : "Mất kết nối"}
-        </div>
-      ),
+      width: 200,
+      render: (
+        text: any,
+        record: { expirationDate: any; expirationTime: any }
+      ) => {
+        const expirationDate = record.expirationDate;
+        const expirationTime = record.expirationTime;
+        const expirationDateTime = ` ${expirationTime} ${expirationDate}`;
+        return <div className="table-cell-content">{expirationDateTime}</div>;
+      },
     },
-
     {
       title: "Trạng thái",
-      dataIndex: "service",
-      key: "service",
-      width: 300,
+      dataIndex: "status",
+      className: "no-wrap",
+      key: "status",
+      render: (status: string) => {
+        let color = "#E73F3F";
+        let text = "Bỏ qua";
+
+        if (status === "Đang chờ") {
+          color = "#3498db";
+          text = "Đang chờ";
+        } else if (status === "Đã sử dụng") {
+          color = "#95a5a6";
+          text = "Đã sử dụng";
+        }
+
+        return (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <div
+              style={{
+                width: "12px",
+                height: "12px",
+                borderRadius: "50%",
+                backgroundColor: color,
+                marginRight: "5px",
+              }}
+            ></div>
+            {text}
+          </div>
+        );
+      },
     },
     {
       title: "Nguồn cấp",
-      dataIndex: "ipAddress",
-      width: 300,
-      key: "service",
+      dataIndex: "source",
+      className: "no-wrap",
+      key: "source",
     },
 
     {
@@ -125,7 +153,7 @@ const GiveNumber: React.FC = () => {
       dataIndex: "edit",
 
       key: "edit",
-      render: (text: string, record: Device) => (
+      render: (text: string, record: GiveNumber) => (
         <NavLink
           className="no-wrap"
           to={`/givenumber/detailgivenumber`}
@@ -139,10 +167,72 @@ const GiveNumber: React.FC = () => {
 
   const calculateIndex = (index: number): number => index + 1;
 
-  const dataSource = devices.map((device, index) => ({
-    ...device,
+  const rowsPerPage = 5;
+  const currentPage = useSelector(
+    (state: RootState) => state.giveNumber.currentPage
+  );
+  const handlePageChange = (page: number) => {
+    dispatch(setCurrentPage(page));
+  };
+  const startIndex: number = (currentPage - 1) * rowsPerPage;
+
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  const [selectedServiceFilter, setSelectedServiceFilter] = useState("Tất cả");
+  const [selectedStatusFilter, setSelectedStatusFilter] = useState("Tất cả");
+  const [selectedSourceFilter, setSelectedSourceFilter] = useState("Tất cả");
+
+  const handleSearchKeywordChange = (value: string) => {
+    setSearchKeyword(value);
+  };
+
+  const handleFilterChange = (
+    value: string,
+    filterType: "serviceName" | "status" | "source"
+  ) => {
+    switch (filterType) {
+      case "serviceName":
+        setSelectedServiceFilter(value);
+        break;
+      case "status":
+        setSelectedStatusFilter(value);
+        break;
+      case "source":
+        setSelectedSourceFilter(value);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const filteredGiveNumber = giveNumber.filter((giveNumber) => {
+    const serviceNameFilter =
+      selectedServiceFilter === "Tất cả" ||
+      giveNumber.serviceName === selectedServiceFilter;
+
+    const statusFilter =
+      selectedStatusFilter === "Tất cả" ||
+      giveNumber.status === selectedStatusFilter;
+
+    const sourceFilter =
+      selectedSourceFilter === "Tất cả" ||
+      giveNumber.source === selectedSourceFilter;
+
+    const searchFilter =
+      searchKeyword === "" ||
+      giveNumber.stt.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      giveNumber.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      giveNumber.serviceName
+        .toLowerCase()
+        .includes(searchKeyword.toLowerCase());
+    return searchFilter && serviceNameFilter && statusFilter && sourceFilter;
+  });
+
+  const dataSource = filteredGiveNumber.map((giveNumber, index) => ({
+    ...giveNumber,
     index: calculateIndex(index),
   }));
+
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
   };
@@ -150,6 +240,9 @@ const GiveNumber: React.FC = () => {
   const onChange: DatePickerProps["onChange"] = (date, dateString) => {
     console.log(date, dateString);
   };
+
+  const [bottom] = useState<TablePaginationPosition>("bottomRight");
+
   return (
     <div className="content">
       <Navbar />
@@ -165,8 +258,9 @@ const GiveNumber: React.FC = () => {
                   size="large"
                   className="select-status"
                   defaultValue="Tất cả"
+                  value={selectedServiceFilter}
                   style={{ width: 150 }}
-                  onChange={handleChange}
+                  onChange={(value) => handleFilterChange(value, "serviceName")}
                   options={[
                     { value: "Tất cả", label: "Tất cả" },
                     {
@@ -175,6 +269,7 @@ const GiveNumber: React.FC = () => {
                     },
                     { value: "Khám răng hàm mặt", label: "Khám răng hàm mặt" },
                     { value: "Khám tai mũi họng", label: "Khám tai mũi họng" },
+                    { value: "Khám tim mạch", label: "Khám tim mạch" },
                   ]}
                 />
               </div>
@@ -184,8 +279,9 @@ const GiveNumber: React.FC = () => {
                   size="large"
                   className="select-status"
                   defaultValue="Tất cả"
+                  value={selectedStatusFilter}
                   style={{ width: 150 }}
-                  onChange={handleChange}
+                  onChange={(value) => handleFilterChange(value, "status")}
                   options={[
                     { value: "Tất cả", label: "Tất cả" },
                     { value: "Đang chờ", label: "Đang chờ" },
@@ -200,8 +296,9 @@ const GiveNumber: React.FC = () => {
                   size="large"
                   className="select-status"
                   defaultValue="Tất cả"
+                  value={selectedSourceFilter}
                   style={{ width: 150 }}
-                  onChange={handleChange}
+                  onChange={(value) => handleFilterChange(value, "source")}
                   options={[
                     { value: "Tất cả", label: "Tất cả" },
                     { value: "Kiosk", label: "Kiosk" },
@@ -240,6 +337,8 @@ const GiveNumber: React.FC = () => {
                     type="text"
                     className="form-control"
                     placeholder="Nhập từ khóa"
+                    value={searchKeyword}
+                    onChange={(e) => handleSearchKeywordChange(e.target.value)}
                   />
                   <Icon
                     icon="iconamoon:search"
@@ -254,7 +353,14 @@ const GiveNumber: React.FC = () => {
               <Table
                 columns={columns}
                 dataSource={dataSource}
-                pagination={false}
+                pagination={{
+                  position: [bottom],
+                  current: currentPage,
+                  pageSize: rowsPerPage,
+                  total: filteredGiveNumber.length,
+                  onChange: handlePageChange,
+                  className: "custom-pagination",
+                }}
               />
             </div>
             <div>
@@ -272,4 +378,4 @@ const GiveNumber: React.FC = () => {
   );
 };
 
-export default GiveNumber;
+export default GiveNumbers;

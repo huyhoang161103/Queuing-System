@@ -4,24 +4,59 @@ import { Checkbox, Input, Select, Space } from "antd";
 import "./pages.css";
 import Navbar from "../components/navbar";
 import Header from "../components/header";
-import { Icon } from "@iconify/react";
-import { firestore } from "../firebase/config";
-import { Device, setSelectedDevice } from "../features/deviceSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../features/store";
 import TextArea from "antd/es/input/TextArea";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
+import { firestore } from "../firebase/config";
+import { addService } from "../features/serviceSlice";
 
 const AddService: React.FC = () => {
   const { Option } = Select;
+
   const navigate = useNavigate();
+
   const onChange = (e: CheckboxChangeEvent) => {
     console.log(`checked = ${e.target.checked}`);
   };
+
   const handleButtonBackClick = () => {
-    // Thực hiện chuyển hướng đến trang EditDevice
     navigate("/service");
   };
+
+  const dispatch = useDispatch();
+
+  const [serviceCode, setServiceCode] = useState("");
+
+  const [serviceName, setServiceName] = useState("");
+
+  const [isActive, setIsActive] = useState(false);
+
+  const [description, setDescription] = useState("");
+
+  const handleAddService = () => {
+    const serviceData = {
+      serviceCode,
+      serviceName,
+      description,
+      isActive,
+    };
+
+    const serviceId = serviceCode;
+
+    // Gửi đối tượng thiết bị mới đến Firestore
+    firestore
+      .collection("services")
+      .doc(serviceId)
+      .set(serviceData)
+      .then(() => {
+        dispatch(addService(serviceData));
+        navigate("/service");
+      })
+      .catch((error) => {
+        console.error("Error adding service: ", error);
+      });
+  };
+
   return (
     <div className="content">
       <Navbar />
@@ -36,21 +71,25 @@ const AddService: React.FC = () => {
                 <div className="row pt-4">
                   <div className="col">
                     <div className="row">
-                      {" "}
                       <div className="col-3">
                         Mã dịch vụ:<span className="red">*</span>
                       </div>
                       <div className="mt-2">
-                        <Input></Input>
+                        <Input
+                          value={serviceCode}
+                          onChange={(e) => setServiceCode(e.target.value)}
+                        ></Input>
                       </div>
                     </div>
                     <div className="row pt-2">
-                      {" "}
                       <div className="col-3">
                         Tên dịch vụ:<span className="red">*</span>
                       </div>
                       <div className="mt-2">
-                        <Input></Input>
+                        <Input
+                          value={serviceName}
+                          onChange={(e) => setServiceName(e.target.value)}
+                        ></Input>
                       </div>
                     </div>
                     <div className="title-detail-device pt-3">
@@ -108,7 +147,10 @@ const AddService: React.FC = () => {
                       Mô tả:<span className="red">*</span>
                     </div>
                     <div className="mt-2">
-                      <TextArea></TextArea>
+                      <TextArea
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                      ></TextArea>
                     </div>
                   </div>
                 </div>
@@ -119,7 +161,9 @@ const AddService: React.FC = () => {
             <button className="back-btn" onClick={handleButtonBackClick}>
               Hủy bỏ
             </button>
-            <button className="add-btn">Thêm dịch vụ</button>
+            <button className="add-btn" onClick={handleAddService}>
+              Thêm dịch vụ
+            </button>
           </div>
         </div>
       </div>
