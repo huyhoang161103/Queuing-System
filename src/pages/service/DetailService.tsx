@@ -1,30 +1,70 @@
 import React, { useEffect, useState } from "react";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { DatePicker, DatePickerProps, Input, Select, Table } from "antd";
-import "./pages.css";
-import Navbar from "../components/navbar";
-import Header from "../components/header";
+import Navbar from "../../components/navbar";
+import Header from "../../components/header";
 import { Icon } from "@iconify/react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../features/store";
-import { setSelectedService } from "../features/serviceSlice";
+import { RootState } from "../../features/store";
+import { setSelectedService } from "../../features/serviceSlice";
+import { setCurrentPage } from "../../features/deviceSlice";
+
+type TablePaginationPosition =
+  | "topLeft"
+  | "topCenter"
+  | "topRight"
+  | "bottomLeft"
+  | "bottomCenter"
+  | "bottomRight";
 
 const DetailService: React.FC = () => {
   const columns = [
     {
       title: "Số thứ tự",
-      dataIndex: "serviceCode",
-      key: "serviceCode",
+      dataIndex: "stt",
+      key: "stt",
       className: "no-wrap",
       width: 300,
     },
 
     {
       title: "Trạng thái",
-      dataIndex: "serviceCode",
-      key: "serviceCode",
+      dataIndex: "status",
+      key: "status",
       className: "no-wrap",
       width: 300,
+      render: (status: string) => {
+        let color = "#E73F3F";
+        let text = "Bỏ qua";
+
+        if (status === "Đang chờ") {
+          color = "#3498db";
+          text = "Đang chờ";
+        } else if (status === "Đã sử dụng") {
+          color = "#95a5a6";
+          text = "Đã sử dụng";
+        }
+
+        return (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <div
+              style={{
+                width: "12px",
+                height: "12px",
+                borderRadius: "50%",
+                backgroundColor: color,
+                marginRight: "5px",
+              }}
+            ></div>
+            {text}
+          </div>
+        );
+      },
     },
   ];
   const dispatch = useDispatch();
@@ -32,6 +72,48 @@ const DetailService: React.FC = () => {
   const selectedService = useSelector(
     (state: RootState) => state.services.selectedService
   );
+
+  const giveNumberData = useSelector(
+    (state: RootState) => state.giveNumber.giveNumber
+  );
+
+  const [selectedStatusFilter, setSelectedStatusFilter] = useState("Tất cả");
+
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  const handleStatusFilterChange = (value: React.SetStateAction<string>) => {
+    setSelectedStatusFilter(value);
+  };
+
+  const handleSearchKeywordChange = (value: React.SetStateAction<string>) => {
+    setSearchKeyword(value);
+  };
+
+  const [bottom] = useState<TablePaginationPosition>("bottomRight");
+
+  const filteredGiveNumberData = giveNumberData.filter((giveNumber) => {
+    const statusFilter =
+      selectedStatusFilter === "Tất cả" ||
+      giveNumber.status === selectedStatusFilter;
+
+    const searchFilter =
+      searchKeyword === "" ||
+      giveNumber.stt.toLowerCase().includes(searchKeyword.toLowerCase());
+
+    return statusFilter && searchFilter;
+  });
+
+  const dataSource = filteredGiveNumberData.map((giveNumber, index) => ({
+    ...giveNumber,
+  }));
+
+  const rowsPerPage = 4;
+  const currentPage = useSelector(
+    (state: RootState) => state.giveNumber.currentPage
+  );
+  const handlePageChange = (page: number) => {
+    dispatch(setCurrentPage(page));
+  };
 
   const navigate = useNavigate();
 
@@ -64,13 +146,11 @@ const DetailService: React.FC = () => {
   if (!selectedService) {
     return <div>Loading...</div>;
   }
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
-  };
 
   const onChange: DatePickerProps["onChange"] = (date, dateString) => {
     console.log(date, dateString);
   };
+
   return (
     <div className="content">
       <Navbar />
@@ -94,7 +174,7 @@ const DetailService: React.FC = () => {
                   <div className="row pt-4">
                     <div className="col">
                       <div className="row">
-                        <div className="col">Tên dịch vụ:</div>
+                        <div className="col label-text">Tên dịch vụ:</div>
                         <div className="col">{selectedService.serviceName}</div>
                       </div>
                     </div>
@@ -103,7 +183,7 @@ const DetailService: React.FC = () => {
                     {" "}
                     <div className="col">
                       <div className="row">
-                        <div className="col">Mô tả:</div>
+                        <div className="col label-text">Mô tả:</div>
                         <div className="col">{selectedService.description}</div>
                       </div>
                     </div>
@@ -114,7 +194,7 @@ const DetailService: React.FC = () => {
                       <div className="row">
                         <div className="col">
                           <div className="row">
-                            <div className="col">Tăng tự động:</div>
+                            <div className="col label-text">Tăng tự động:</div>
                             <div className="col flex-input">
                               <Input
                                 value={"0001"}
@@ -136,7 +216,7 @@ const DetailService: React.FC = () => {
                       <div className="row">
                         <div className="col">
                           <div className="row">
-                            <div className="col">Prefix:</div>
+                            <div className="col label-text">Prefix:</div>
                             <div className="col">
                               <Input
                                 value={"0001"}
@@ -153,7 +233,9 @@ const DetailService: React.FC = () => {
                       <div className="row">
                         <div className="col">
                           <div className="row">
-                            <div className="col">Reset mỗi ngày:</div>
+                            <div className="col label-text">
+                              Reset mỗi ngày:
+                            </div>
                             <div className="pt-2">Ví dụ: 201-2001</div>
                           </div>
                         </div>
@@ -176,13 +258,14 @@ const DetailService: React.FC = () => {
                         className="select-status"
                         defaultValue="Tất cả"
                         style={{ width: 150 }}
-                        onChange={handleChange}
+                        onChange={handleStatusFilterChange}
                         options={[
                           { value: "Tất cả", label: "Tất cả" },
-                          { value: "Hoạt động", label: "Hoạt động" },
+                          { value: "Đang chờ", label: "Đang chờ" },
+                          { value: "Đã sử dụng", label: "Đã sử dụng" },
                           {
-                            value: "Ngưng hoạt động",
-                            label: "Ngưng hoạt động",
+                            value: "Bỏ qua",
+                            label: "Bỏ qua",
                           },
                         ]}
                       />
@@ -212,6 +295,10 @@ const DetailService: React.FC = () => {
                             type="text"
                             className="form-control"
                             placeholder="Nhập từ khóa"
+                            value={searchKeyword}
+                            onChange={(e) =>
+                              handleSearchKeywordChange(e.target.value)
+                            }
                           />
                           <Icon
                             icon="iconamoon:search"
@@ -222,8 +309,18 @@ const DetailService: React.FC = () => {
                     </div>
                   </div>
                   <div className="pt-3">
-                    {" "}
-                    <Table columns={columns} pagination={false} />
+                    <Table
+                      columns={columns}
+                      dataSource={dataSource}
+                      pagination={{
+                        position: [bottom],
+                        current: currentPage,
+                        pageSize: rowsPerPage,
+                        total: filteredGiveNumberData.length,
+                        onChange: handlePageChange,
+                        className: "custom-pagination",
+                      }}
+                    />
                   </div>
                 </div>
               </div>

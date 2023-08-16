@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { Checkbox, Input, Modal, Select, Space } from "antd";
-import "./pages.css";
-import Navbar from "../components/navbar";
-import Header from "../components/header";
+import Navbar from "../../components/navbar";
+import Header from "../../components/header";
 import moment from "moment";
-import { firestore } from "../firebase/config";
+import { firestore } from "../../firebase/config";
 import { useSelector } from "react-redux";
 
 const NewGiveNumber: React.FC = () => {

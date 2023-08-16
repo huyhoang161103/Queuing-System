@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { Input, Select, Table } from "antd";
-import Navbar from "../components/navbar";
-import Header from "../components/header";
+import Navbar from "../../components/navbar";
+import Header from "../../components/header";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../features/store";
-import { firestore } from "../firebase/config";
+import { RootState } from "../../features/store";
+import { firestore } from "../../firebase/config";
 import {
   Device,
   setCurrentPage,
   setDevices,
   setSelectedDevice,
-} from "../features/deviceSlice";
+} from "../../features/deviceSlice";
 
 type TablePaginationPosition =
   | "topLeft"

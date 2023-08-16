@@ -23,10 +23,51 @@
 
 .menu-item {
   border-radius: 8px;
-  padding: 30px 0px 30px 0px;
+  padding: 20px 0px 45px 30px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.menu-item-sub {
+  text-decoration: none;
+  color: var(--gray-gray-300, #7e7d88);
+  font-family: monospace;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 26px;
+  letter-spacing: 0.27px;
+  display: block;
+  border-radius: 5px;
+  border-radius: 8px;
+  padding: 10px 0px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sub-menu-2 {
+  width: 200px;
+}
+
+.sub-menu-2 a {
+  width: 200px;
+  text-decoration: none;
+  color: var(--gray-gray-300, #7e7d88);
+  font-family: "Nunito", sans-serif;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 26px;
+  letter-spacing: 0.27px;
+  display: block;
+  border-radius: 5px;
+}
+
+.menu-item-sub:hover {
+  color: var(--orange-orange-400, #ff9138) !important;
+  background: var(--orange-orange-50, #fff2e7) !important;
 }
 
 .menu .navigation a {
@@ -92,10 +133,9 @@
 
 .menu-footer {
   position: absolute;
-  transform: translateY(350%);
+  transform: translateY(240%);
   width: 80%;
   margin-left: 25px;
-
   border-radius: 8px;
   color: var(--orange-orange-500, #ff7506);
   background: var(--orange-orange-50, #fff2e7);
@@ -103,7 +143,7 @@
 
 .menu-footer a {
   padding: 0 15px;
-  margin-left: 15px;
+  margin-top: 8px;
   color: var(--orange-orange-500, #ff7506) !important;
 }
 

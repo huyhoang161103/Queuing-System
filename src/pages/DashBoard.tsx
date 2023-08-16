@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Input } from "antd";
-import "./pages.css";
 import firebase from "firebase/compat";
 import Navbar from "../components/navbar";
 import Header from "../components/header";

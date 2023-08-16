@@ -6,6 +6,7 @@ import userReducer from "./userSlice";
 import deviceReducer from "./deviceSlice";
 import serviceReducer from "./serviceSlice";
 import giveNumberReducer from "./giveNumberSlice";
+import roleReducer from "./roleSlice";
 
 const persistConfig = {
   key: "root",
@@ -19,6 +20,7 @@ const persistedGiveNumberReducer = persistReducer(
   persistConfig,
   giveNumberReducer
 );
+const persistedRoleReducer = persistReducer(persistConfig, roleReducer);
 
 const store = configureStore({
   reducer: {
@@ -26,6 +28,7 @@ const store = configureStore({
     devices: persistedDeviceReducer,
     services: persistedServiceReducer,
     giveNumber: persistedGiveNumberReducer,
+    roles: persistedRoleReducer,
   },
 });
 

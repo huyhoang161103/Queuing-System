@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Input } from "antd";
-import "./pages.css";
 import { useDispatch } from "react-redux";
 import { firestore } from "../firebase/config";
 import { setUser } from "../features/userSlice";

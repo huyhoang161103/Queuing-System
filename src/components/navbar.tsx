@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import { Menu } from "antd";
+import { Menu, Modal } from "antd";
 
 import "./components.css";
 import { SettingOutlined } from "@ant-design/icons";
@@ -17,6 +17,12 @@ const Navbar: React.FC = () => {
     setSelectedMenuItem(pathname);
   }, [location]);
 
+  const [isSubMenuVisible, setSubMenuVisible] = useState(false);
+
+  const handleSubMenuClick = () => {
+    setSubMenuVisible(true);
+  };
+
   return (
     <div className="menu">
       <div className="navbar">
@@ -27,7 +33,7 @@ const Navbar: React.FC = () => {
             </NavLink>
           </div>
 
-          <Menu mode="inline" style={{ width: 256 }} className="navigation">
+          <Menu mode="vertical" style={{ width: 256 }} className="navigation">
             <Menu.Item
               key="dashboard"
               className={`menu-item ${
@@ -81,25 +87,29 @@ const Navbar: React.FC = () => {
                 <Icon icon="fluent-mdl2:report-document" /> Báo cáo
               </NavLink>
             </Menu.Item>
-
-            <SubMenu
-              key="settings"
+            <Menu.SubMenu
+              className="menu-item-sub"
+              key="3"
               title={
-                <NavLink to="/settings" className="menu-item">
-                  <Icon icon="ri:settings-line" className="me-2" />
-                  Cài đặt hệ thống
-                </NavLink>
+                <span>
+                  <Icon icon="ri:settings-line" /> Cài đặt hệ thống
+                </span>
               }
-              popupClassName="right-submenu"
+              onTitleClick={handleSubMenuClick}
             >
-              {" "}
-              <Menu.Item key="systemSettings" className="menu-item">
-                <NavLink to="/system-settings">Cài đặt hệ thống</NavLink>
-              </Menu.Item>
-              <Menu.Item key="accountSettings" className="menu-item">
-                <NavLink to="/account-settings">Cài đặt tài khoản</NavLink>
-              </Menu.Item>
-            </SubMenu>
+              <Menu mode="vertical" className="sub-menu-2">
+                <Menu.Item key="roleSettings" className="menu-item">
+                  <NavLink to="/role-settings">Quản lý vai trò</NavLink>
+                </Menu.Item>
+                <Menu.Item key="accountSettings" className="menu-item">
+                  <NavLink to="/account-settings">Quản lý tài khoản</NavLink>
+                </Menu.Item>
+                <Menu.Item key="userSettings" className="menu-item">
+                  <NavLink to="/diary-settings">Nhật ký người dùng</NavLink>
+                </Menu.Item>
+              </Menu>
+            </Menu.SubMenu>
+
             <div className="menu-footer">
               <Menu.Item key="logout">
                 <NavLink to="/logout">

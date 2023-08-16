@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { Checkbox, Input, Select, Space } from "antd";
-import "./pages.css";
-import Navbar from "../components/navbar";
-import Header from "../components/header";
+import Navbar from "../../components/navbar";
+import Header from "../../components/header";
 import { useDispatch, useSelector } from "react-redux";
 import TextArea from "antd/es/input/TextArea";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
-import { firestore } from "../firebase/config";
-import { addService } from "../features/serviceSlice";
+import { firestore } from "../../firebase/config";
+import { addService } from "../../features/serviceSlice";
 
-const AddService: React.FC = () => {
+const EditAcc: React.FC = () => {
   const { Option } = Select;
 
   const navigate = useNavigate();
@@ -171,4 +170,4 @@ const AddService: React.FC = () => {
   );
 };
 
-export default AddService;
+export default EditAcc;

@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { DatePicker, DatePickerProps, Input, Select, Table } from "antd";
-import Navbar from "../components/navbar";
-import Header from "../components/header";
+import Navbar from "../../components/navbar";
+import Header from "../../components/header";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../features/store";
-import { firestore } from "../firebase/config";
+import { RootState } from "../../features/store";
+import { firestore } from "../../firebase/config";
 import {
   GiveNumber,
   setCurrentPage,
   setGiveNumber,
   setSelectedGiveNumber,
-} from "../features/giveNumberSlice";
+} from "../../features/giveNumberSlice";
 
 type TablePaginationPosition =
   | "topLeft"
@@ -34,7 +34,7 @@ const GiveNumbers: React.FC = () => {
     navigate("/givenumber/newgivenumber");
   };
 
-  const handleDeviceClick = (giveNumber: GiveNumber) => {
+  const handleGiveNumberClick = (giveNumber: GiveNumber) => {
     dispatch(setSelectedGiveNumber(giveNumber));
   };
 
@@ -60,6 +60,8 @@ const GiveNumbers: React.FC = () => {
       dataIndex: "stt",
       key: "stt",
       className: "no-wrap",
+      // sorter: (a: any, b: any) => parseInt(b.stt) - parseInt(a.stt),
+      // defaultSortOrder: "descend" as SortOrder,
     },
 
     {
@@ -157,7 +159,7 @@ const GiveNumbers: React.FC = () => {
         <NavLink
           className="no-wrap"
           to={`/givenumber/detailgivenumber`}
-          onClick={() => handleDeviceClick(record)}
+          onClick={() => handleGiveNumberClick(record)}
         >
           Chi tiết
         </NavLink>

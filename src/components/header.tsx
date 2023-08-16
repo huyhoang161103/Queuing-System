@@ -171,6 +171,43 @@ const Header: React.FC = () => {
         Lập báo cáo
       </Breadcrumb.Item>
     );
+  } else if (location.pathname === "/role-settings") {
+    breadcrumbItems.push(
+      <Breadcrumb.Item key="reports" className="breadcrumb-item-1">
+        Cài đặt hệ thống
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="reports-list" className="breadcrumb-item">
+        Quản lý vai trò
+      </Breadcrumb.Item>
+    );
+  } else if (location.pathname === "/role-settings/addrole") {
+    breadcrumbItems.push(
+      <Breadcrumb.Item key="service" className="breadcrumb-item-1">
+        Cài đặt hệ thống
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="service-list" className="breadcrumb-item-1">
+        <NavLink to={"/role-settings"} className="breadcrumb-item-nav">
+          Quản lý vai trò
+        </NavLink>
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="service-add" className="breadcrumb-item">
+        Thêm vai trò
+      </Breadcrumb.Item>
+    );
+  } else if (location.pathname === "/role-settings/editrole") {
+    breadcrumbItems.push(
+      <Breadcrumb.Item key="service" className="breadcrumb-item-1">
+        Cài đặt hệ thống
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="service-list" className="breadcrumb-item-1">
+        <NavLink to={"/role-settings"} className="breadcrumb-item-nav">
+          Quản lý vai trò
+        </NavLink>
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="service-add" className="breadcrumb-item">
+        Cập nhật vai trò
+      </Breadcrumb.Item>
+    );
   }
 
   return (

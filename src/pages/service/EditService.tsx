@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Checkbox, Input, Select, Space } from "antd";
-import "./pages.css";
-import Navbar from "../components/navbar";
-import Header from "../components/header";
+import Navbar from "../../components/navbar";
+import Header from "../../components/header";
 import { Icon } from "@iconify/react";
 import TextArea from "antd/es/input/TextArea";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../features/store";
-import { firestore } from "../firebase/config";
-import { updateServiceData } from "../features/serviceSlice";
+import { RootState } from "../../features/store";
+import { firestore } from "../../firebase/config";
+import { updateServiceData } from "../../features/serviceSlice";
 
 const EditService: React.FC = () => {
   const { Option } = Select;

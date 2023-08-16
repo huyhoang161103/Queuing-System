@@ -3,6 +3,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 
 export interface GiveNumber {
+  endDate: never;
+  startDate: never;
   expirationDate: string;
   expirationTime: string;
   issuanceDate: string;
