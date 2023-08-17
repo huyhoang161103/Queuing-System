@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux"; // Import useSelector from Redux
 import { NavLink, useLocation } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import { Avatar, Breadcrumb } from "antd";
+import { Avatar, Breadcrumb, Button, Popover } from "antd";
 import "./components.css";
 
 const Header: React.FC = () => {
@@ -214,8 +214,27 @@ const Header: React.FC = () => {
     <div className="header">
       <Breadcrumb separator=" ">{breadcrumbItems}</Breadcrumb>
       <div className="notification-avatar">
-        <div className="noti">
-          <Icon icon="ion:notifcations" className="notification-icon" />
+        <div className="">
+          <Popover
+            className="noti"
+            placement="bottom"
+            content={
+              <div className="message">
+                <div className="title-message">
+                  <span>Thông báo</span>
+                </div>
+                <div className="message-2">
+                  <p>Content</p>
+                  <p>Content</p>
+                </div>
+              </div>
+            }
+            trigger="click"
+          >
+            <Button className="notification-icon">
+              <Icon icon="ion:notifcations" className="i" />
+            </Button>
+          </Popover>
         </div>
         <div className="info">
           {currentUser ? (

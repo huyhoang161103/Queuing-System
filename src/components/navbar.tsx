@@ -5,19 +5,25 @@ import { Menu, Modal } from "antd";
 
 import "./components.css";
 import { SettingOutlined } from "@ant-design/icons";
-const { SubMenu } = Menu;
 
 const Navbar: React.FC = () => {
+  const { SubMenu } = Menu;
   const location = useLocation();
   const [selectedMenuItem, setSelectedMenuItem] = useState("");
+  const [isSubMenuVisible, setSubMenuVisible] = useState(false);
+  const [isSubMenuSelected, setIsSubMenuSelected] = useState(false);
 
   useEffect(() => {
     // Xác định mục menu được chọn dựa trên URL hiện tại
     const pathname = location.pathname;
     setSelectedMenuItem(pathname);
-  }, [location]);
 
-  const [isSubMenuVisible, setSubMenuVisible] = useState(false);
+    setIsSubMenuSelected(
+      pathname.startsWith("/role-settings") ||
+        pathname.startsWith("/account-settings") ||
+        pathname.startsWith("/diary-settings")
+    );
+  }, [location]);
 
   const handleSubMenuClick = () => {
     setSubMenuVisible(true);
@@ -88,7 +94,7 @@ const Navbar: React.FC = () => {
               </NavLink>
             </Menu.Item>
             <Menu.SubMenu
-              className="menu-item-sub"
+              className={`menu-item-sub ${isSubMenuSelected ? "selected" : ""}`}
               key="3"
               title={
                 <span>

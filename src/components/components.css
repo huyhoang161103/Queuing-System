@@ -39,9 +39,10 @@
   line-height: 26px;
   letter-spacing: 0.27px;
   display: block;
-  border-radius: 5px;
+
   border-radius: 8px;
   padding: 10px 0px;
+  margin: 0px 3px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -90,6 +91,12 @@
 
 /* Thay đổi màu chữ của menu item khi được chọn */
 .navigation .ant-menu-item.selected a {
+  color: white !important;
+}
+
+/* Thay đổi màu của menu.submenu khi một trong ba menu.item con được chọn */
+.menu-item-sub.selected {
+  background-color: var(--orange-orange-400, #ff9138) !important;
   color: white !important;
 }
 
@@ -158,21 +165,47 @@
   display: flex;
 }
 
-.notification-icon {
+.notification-icon .i {
+  width: 20px;
+  height: 20px;
   color: #ff9138;
 }
 
 .noti {
   margin-top: 5px;
   display: flex;
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   padding: 6px;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
   border-radius: 32px;
   background: var(--orange-orange-50, #fff2e7);
+}
+
+.message {
+  width: 320px;
+}
+
+.message-2 {
+  padding: 16px 16px;
+}
+
+.title-message {
+  border-radius: 6px 6px 0px 0px !important;
+  padding: 16px 16px;
+  background-color: #ff7506;
+}
+
+.title-message span {
+  color: white;
+
+  font-family: "Nunito", sans-serif;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px; /* 150% */
 }
 
 .info {
@@ -218,4 +251,8 @@
 .breadcrumb-item-1:hover a {
   background-color: transparent !important;
   color: inherit !important;
+}
+
+.ant-popover-inner {
+  padding: 0px !important;
 }
