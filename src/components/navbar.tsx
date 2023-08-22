@@ -34,7 +34,7 @@ const Navbar: React.FC = () => {
       <div className="navbar">
         <div className="col">
           <div className="logo">
-            <NavLink to="/">
+            <NavLink to="/dashboard">
               <img src="/img/Group.svg" alt="Logo" />
             </NavLink>
           </div>

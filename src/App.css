@@ -590,3 +590,128 @@
 .chuc-nang-content {
   padding: 16px 24px;
 }
+
+.card-main {
+  padding-right: 10px;
+}
+
+.card-container {
+  display: flex;
+}
+
+.so-luong {
+  justify-content: space-between;
+  display: flex;
+  padding-top: 15px;
+}
+
+.so {
+  color: var(--gray-gray-400-text, #535261);
+
+  /* 30/30 Bold */
+  font-family: "Nunito", sans-serif;
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.so1 {
+  color: var(--gray-gray-400-text, #535261);
+
+  /* 30/30 Bold */
+  font-family: "Nunito", sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.phan-tram1 {
+  color: var(--orange-orange-400, #ff9138);
+}
+
+.phan-tram2 {
+  color: var(--orange-orange-500, #4277ff);
+}
+
+.phan-tram3 {
+  color: var(--orange-orange-500, #35c75a);
+}
+
+.phan-tram {
+  margin-top: 15px;
+  height: 20px;
+  border-radius: 7.181px;
+  background: rgba(255, 149, 1, 0.15);
+}
+
+.phan-tram-i {
+  padding: 4px;
+  color: var(--orange-orange-400, #ff9138);
+  font-family: "Nunito", sans-serif;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 12px; /* 150% */
+}
+
+.content-container {
+  display: flex;
+}
+
+.content-container1 {
+  padding-right: 20px;
+}
+
+.cal-stt {
+  padding: 0px 24px;
+}
+
+.content-container2 {
+  background-color: white;
+}
+
+.trangthai {
+  color: var(--gray-gray-300, #7e7d88);
+  font-family: "Nunito", sans-serif;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px; /* 175% */
+}
+
+.trangthai1 {
+  padding-left: 10px;
+  color: var(--orange-orange-500, #ff7506);
+  font-family: "Nunito", sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 18px; /* 128.571% */
+}
+
+.trangthai2 {
+  padding-left: 10px;
+  color: var(--orange-orange-500, #4277ff);
+  font-family: "Nunito", sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 18px; /* 128.571% */
+}
+
+.trangthai3 {
+  padding-left: 10px;
+  color: var(--orange-orange-500, #35c75a);
+  font-family: "Nunito", sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 18px; /* 128.571% */
+}
+
+.bieudo {
+  margin-top: 10px;
+  padding-top: 20px;
+  border-radius: 12px;
+  background: var(--white, #fff);
+}

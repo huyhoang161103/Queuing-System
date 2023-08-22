@@ -4,8 +4,11 @@ import { NavLink, useLocation } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { Avatar, Breadcrumb, Button, Popover } from "antd";
 import "./components.css";
+import { RootState } from "../features/store";
 
 const Header: React.FC = () => {
+  const thongBao = useSelector((state: RootState) => state.popover.thongBao);
+
   const location = useLocation();
   const currentUser = useSelector((state: any) => state.user.currentUser);
 
@@ -208,6 +211,52 @@ const Header: React.FC = () => {
         Cập nhật vai trò
       </Breadcrumb.Item>
     );
+  } else if (location.pathname === "/account-settings") {
+    breadcrumbItems.push(
+      <Breadcrumb.Item key="reports" className="breadcrumb-item-1">
+        Cài đặt hệ thống
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="reports-list" className="breadcrumb-item">
+        Quản lý tài khoản
+      </Breadcrumb.Item>
+    );
+  } else if (location.pathname === "/account-settings/addacc") {
+    breadcrumbItems.push(
+      <Breadcrumb.Item key="service" className="breadcrumb-item-1">
+        Cài đặt hệ thống
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="service-list" className="breadcrumb-item-1">
+        <NavLink to={"/account-settings"} className="breadcrumb-item-nav">
+          Quản lý tài khoản
+        </NavLink>
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="service-add" className="breadcrumb-item">
+        Thêm tài khoản
+      </Breadcrumb.Item>
+    );
+  } else if (location.pathname === "/account-settings/editacc") {
+    breadcrumbItems.push(
+      <Breadcrumb.Item key="service" className="breadcrumb-item-1">
+        Cài đặt hệ thống
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="service-list" className="breadcrumb-item-1">
+        <NavLink to={"/account-settings"} className="breadcrumb-item-nav">
+          Quản lý tài khoản
+        </NavLink>
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="service-add" className="breadcrumb-item">
+        Cập nhật tài khoản
+      </Breadcrumb.Item>
+    );
+  } else if (location.pathname === "/diary-settings") {
+    breadcrumbItems.push(
+      <Breadcrumb.Item key="reports" className="breadcrumb-item-1">
+        Cài đặt hệ thống
+      </Breadcrumb.Item>,
+      <Breadcrumb.Item key="reports-list" className="breadcrumb-item">
+        Nhật ký người dùng
+      </Breadcrumb.Item>
+    );
   }
 
   return (
@@ -224,8 +273,14 @@ const Header: React.FC = () => {
                   <span>Thông báo</span>
                 </div>
                 <div className="message-2">
-                  <p>Content</p>
-                  <p>Content</p>
+                  {thongBao.map((thongBaoItem, index) => (
+                    <div key={index} className="notifi">
+                      <p className="noti-1">
+                        Người dùng: {thongBaoItem.userName}
+                      </p>
+                      <p className="noti-2">Thời gian: {thongBaoItem.time}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             }

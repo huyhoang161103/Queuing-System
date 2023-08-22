@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Input } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { firestore } from "../firebase/config";
-import { setUser } from "../features/userSlice";
+import { User, setUser } from "../features/userSlice";
 import { Icon } from "@iconify/react";
+import { RootState } from "../features/store";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -13,6 +14,8 @@ const Login: React.FC = () => {
   const [showErrorIcon, setShowErrorIcon] = useState(false); // Thêm state để kiểm tra xem có hiển thị biểu tượng lỗi hay không
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
   const handleLogin = async () => {
     try {
@@ -25,7 +28,7 @@ const Login: React.FC = () => {
       const userQuerySnapshot = await userRef.get();
 
       if (!userQuerySnapshot.empty) {
-        const userData = userQuerySnapshot.docs[0].data();
+        const userData = userQuerySnapshot.docs[0].data() as User;
 
         if (userData.password === password) {
           dispatch(setUser(userData));

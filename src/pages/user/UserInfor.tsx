@@ -12,21 +12,6 @@ const UserInfor: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const handleButtonBackClick = () => {
-    // Thực hiện chuyển hướng đến trang EditDevice
-    navigate("/givenumber");
-  };
-
-  const [selectedService, setSelectedService] = useState<string | undefined>(
-    undefined
-  );
-
-  const [currentNumber, setCurrentNumber] = useState(1);
-
-  const handleServiceChange = (value: string) => {
-    setSelectedService(value);
-  };
-
   const currentUser = useSelector((state: any) => state.user.currentUser);
 
   return (

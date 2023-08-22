@@ -1,18 +1,24 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Icon } from "@iconify/react";
-import { DatePicker, DatePickerProps, Table } from "antd";
+import { DatePicker, DatePickerProps, Input, Select, Table } from "antd";
 import Navbar from "../../components/navbar";
 import Header from "../../components/header";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../features/store";
 import { firestore } from "../../firebase/config";
 
-import { GiveNumber, setGiveNumber } from "../../features/giveNumberSlice";
+import {
+  GiveNumber,
+  setCurrentPage,
+  setGiveNumber,
+} from "../../features/giveNumberSlice";
 
 import ExcelJS from "exceljs"; // Import the exceljs library
 import FileSaver from "file-saver";
 import { SortOrder } from "antd/es/table/interface";
+import { User, setSelectedUser, setUsers } from "../../features/userSlice";
+import { NavLink, useNavigate } from "react-router-dom";
 
 type TablePaginationPosition =
   | "topLeft"
@@ -24,58 +30,67 @@ type TablePaginationPosition =
 
 const AccountSettings: React.FC = () => {
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   useEffect(() => {
-    const fetchGiveNumber = async () => {
+    const fetchUsers = async () => {
       try {
-        const snapshot = await firestore.collection("giveNumber").get();
-        const giveNumberData = snapshot.docs.map(
-          (doc) => doc.data() as GiveNumber
-        );
-        dispatch(setGiveNumber(giveNumberData));
+        const snapshot = await firestore.collection("users").get();
+        const usersData = snapshot.docs.map((doc) => doc.data() as User);
+
+        dispatch(setUsers(usersData));
       } catch (error) {
-        console.error("Error fetching :", error);
+        console.error("Error fetching users:", error);
       }
     };
 
-    fetchGiveNumber();
+    fetchUsers();
   }, [dispatch]);
+
+  const users = useSelector((state: RootState) => state.user.users);
+
+  const handleUserClick = (users: User) => {
+    dispatch(setSelectedUser(users));
+  };
+
+  const handleButtonAddClick = () => {
+    navigate("/account-settings/addacc");
+  };
 
   const columns = [
     {
-      title: "Số thứ tự",
-      dataIndex: "stt",
-      key: "stt",
+      title: "Tên đăng nhập",
+      dataIndex: "username",
+      key: "username",
       className: "no-wrap",
       width: 200,
-      sorter: (a: any, b: any) => parseInt(b.stt) - parseInt(a.stt),
-      defaultSortOrder: "descend" as SortOrder,
     },
 
     {
-      title: "Tên dịch vụ",
-      dataIndex: "serviceName",
-      key: "serviceName",
+      title: "Tên người dùng",
+      dataIndex: "name",
+      key: "name",
       className: "no-wrap",
       width: 300,
-      sorter: (a: any, b: any) =>
-        parseInt(b.serviceName) - parseInt(a.serviceName),
-      defaultSortOrder: "descend" as SortOrder,
     },
     {
-      title: "Thời gian cấp",
-      key: "issuanceDateTime",
+      title: "Số điện thoại",
+      dataIndex: "userPhoneNumber",
+      key: "userPhoneNumber",
       className: "no-wrap",
-      sorter: (a: any, b: any) =>
-        parseInt(b.issuanceDateTime) - parseInt(a.issuanceDateTime),
-      defaultSortOrder: "descend" as SortOrder,
       width: 300,
-      render: (text: any, record: { issuanceDate: any; issuanceTime: any }) => {
-        const issuanceDate = record.issuanceDate;
-        const issuanceTime = record.issuanceTime;
-        const issuanceDateTime = `${issuanceTime} ${issuanceDate}`;
-        return <div className="table-cell-content">{issuanceDateTime}</div>;
-      },
+    },
+    {
+      title: "Email",
+      dataIndex: "userEmail",
+      key: "userEmail",
+      className: "no-wrap",
+      width: 300,
+    },
+    {
+      title: "Vai trò",
+      dataIndex: "userRole",
+      key: "userRole",
+      className: "no-wrap",
     },
     {
       title: "Tình trạng",
@@ -83,18 +98,14 @@ const AccountSettings: React.FC = () => {
       className: "no-wrap",
       width: 300,
       key: "status",
-      sorter: (a: any, b: any) => parseInt(b.status) - parseInt(a.status),
-      defaultSortOrder: "descend" as SortOrder,
-      render: (status: string) => {
-        let color = "#E73F3F";
-        let text = "Bỏ qua";
 
-        if (status === "Đang chờ") {
-          color = "#3498db";
-          text = "Đang chờ";
-        } else if (status === "Đã sử dụng") {
-          color = "#95a5a6";
-          text = "Đã sử dụng";
+      render: (status: string) => {
+        let color = "#EC3740";
+        let text = "Ngưng hoạt động";
+
+        if (status === "Hoạt động") {
+          color = "#34CD26";
+          text = "Hoạt động";
         }
 
         return (
@@ -119,63 +130,71 @@ const AccountSettings: React.FC = () => {
       },
     },
     {
-      title: "Nguồn cấp",
-      dataIndex: "source",
-      key: "source",
-      width: 300,
-      sorter: (a: any, b: any) => parseInt(b.source) - parseInt(a.source),
-      defaultSortOrder: "descend" as SortOrder,
+      title: " ",
+      dataIndex: "edit",
+
+      key: "edit",
+      render: (text: string, record: User) => (
+        <NavLink
+          className="no-wrap"
+          to={`/account-settings/editacc`}
+          onClick={() => handleUserClick(record)}
+        >
+          Cập nhật
+        </NavLink>
+      ),
     },
   ];
 
-  const giveNumber = useSelector(
-    (state: RootState) => state.giveNumber.giveNumber
-  );
   const calculateIndex = (index: number): number => index + 1;
-
-  const dataSource = giveNumber.map((giveNumber, index) => ({
-    ...giveNumber,
-    index: calculateIndex(index),
-  }));
 
   const onChange: DatePickerProps["onChange"] = (date, dateString) => {
     console.log(date, dateString);
   };
 
-  const handleDownload = () => {
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Danh sách cấp số");
+  const [searchKeyword, setSearchKeyword] = useState("");
 
-    // Add columns
-    worksheet.columns = [
-      { header: "Số thứ tự", key: "stt", width: 15 },
-      { header: "Tên dịch vụ", key: "serviceName", width: 30 },
-      { header: "Thời gian cấp", key: "issuanceDateTime", width: 30 },
-      { header: "Tình trạng", key: "status", width: 20 },
-      { header: "Nguồn cấp", key: "source", width: 20 },
-    ];
+  const [activeStatusFilter, setActiveStatusFilter] = useState("Tất cả");
 
-    // Add data rows
-    dataSource.forEach((item) => {
-      worksheet.addRow({
-        stt: item.stt,
-        serviceName: item.serviceName,
-        issuanceDateTime: `${item.issuanceTime} ${item.issuanceDate}`,
-        status: item.status,
-        source: item.source,
-      });
-    });
-
-    // Create a buffer containing the Excel file
-    workbook.xlsx.writeBuffer().then((buffer: BlobPart) => {
-      const blob = new Blob([buffer], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      });
-
-      const fileName = "Danh_sach_cap_so.xlsx";
-      FileSaver.saveAs(blob, fileName);
-    });
+  const handleSearchKeywordChange = (value: string) => {
+    setSearchKeyword(value);
   };
+
+  const handleChangeActiveStatusFilter = (value: string) => {
+    setActiveStatusFilter(value);
+  };
+
+  const filteredUser = users.filter((user) => {
+    const isActiveFilter =
+      activeStatusFilter === "Tất cả" ||
+      (activeStatusFilter === "Giám đốc" && user.userRole === "Giám đốc") ||
+      (activeStatusFilter === "Quản lý" && user.userRole === "Quản lý") ||
+      (activeStatusFilter === "Bác sĩ" && user.userRole === "Bác sĩ") ||
+      (activeStatusFilter === "Y tá" && user.userRole === "Y tá") ||
+      (activeStatusFilter === "Thực tập sinh" &&
+        user.userRole === "Thực tập sinh");
+
+    const searchFilter =
+      searchKeyword === "" ||
+      user.name.toLowerCase().includes(searchKeyword.toLowerCase());
+
+    return isActiveFilter && searchFilter;
+  });
+
+  const dataSource = filteredUser.map((user, index) => ({
+    ...user,
+    index: calculateIndex(index),
+  }));
+
+  const rowsPerPage = 5;
+  const currentPage = useSelector(
+    (state: RootState) => state.devices.currentPage
+  );
+  const handlePageChange = (page: number) => {
+    dispatch(setCurrentPage(page));
+  };
+
+  const [bottom] = useState<TablePaginationPosition>("bottomRight");
 
   return (
     <div className="content">
@@ -183,27 +202,49 @@ const AccountSettings: React.FC = () => {
       <div className="content-main">
         <Header />
         <div className="container-main">
+          <div className="title">Danh sách tài khoản</div>
           <div className="status-search">
             <div className="status">
               <div className="pe-4">
-                <div>Chọn thời gian</div>
+                <div>Chọn vai trò</div>
                 <div className="row">
-                  <div className="col">
-                    {" "}
-                    <DatePicker
-                      onChange={onChange}
-                      placeholder="Chọn ngày"
-                      size="large"
-                    />
-                  </div>
-                  <div className="col">
-                    {" "}
-                    <DatePicker
-                      onChange={onChange}
-                      placeholder="Chọn ngày"
-                      size="large"
-                    />
-                  </div>
+                  <Select
+                    size="large"
+                    className="select-status"
+                    onChange={handleChangeActiveStatusFilter}
+                    defaultValue="Tất cả"
+                    style={{ width: 300 }}
+                    options={[
+                      { value: "Tất cả", label: "Tất cả" },
+                      { value: "Giám đốc", label: "Giám đốc" },
+                      {
+                        value: "Quản lý",
+                        label: "Quản lý",
+                      },
+                      { value: "Bác sĩ", label: "Bác sĩ" },
+                      { value: "Y tá", label: "Y tá" },
+                      { value: "Thực tập sinh", label: "Thực tập sinh" },
+                    ]}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="search">
+              <div className="">Từ khóa</div>
+              <div className="search-filter">
+                <div className="search-ticket">
+                  <Input
+                    style={{ width: 300, height: 40 }}
+                    type="text"
+                    className="form-control"
+                    placeholder="Nhập từ khóa"
+                    value={searchKeyword}
+                    onChange={(e) => handleSearchKeywordChange(e.target.value)}
+                  />
+                  <Icon
+                    icon="iconamoon:search"
+                    className="search-ticket-icon"
+                  />
                 </div>
               </div>
             </div>
@@ -213,17 +254,21 @@ const AccountSettings: React.FC = () => {
               <Table
                 columns={columns}
                 dataSource={dataSource}
-                pagination={false}
+                pagination={{
+                  position: [bottom],
+                  current: currentPage,
+                  pageSize: rowsPerPage,
+                  total: filteredUser.length,
+                  onChange: handlePageChange,
+                  className: "custom-pagination",
+                }}
               />
             </div>
             <div>
-              <button className="button-add" onClick={handleDownload}>
+              <button className="button-add" onClick={handleButtonAddClick}>
                 <div className="col">
-                  <Icon
-                    icon="solar:file-download-bold"
-                    className="button-icon"
-                  />
-                  <p>Tải về</p>
+                  <Icon icon="basil:add-solid" className="button-icon" />
+                  <p>Thêm tài khoản</p>
                 </div>
               </button>
             </div>

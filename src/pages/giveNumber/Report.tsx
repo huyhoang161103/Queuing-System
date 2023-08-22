@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Icon } from "@iconify/react";
 import { DatePicker, DatePickerProps, Table } from "antd";
@@ -8,7 +8,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../features/store";
 import { firestore } from "../../firebase/config";
 
-import { GiveNumber, setGiveNumber } from "../../features/giveNumberSlice";
+import {
+  GiveNumber,
+  setCurrentPage,
+  setGiveNumber,
+} from "../../features/giveNumberSlice";
 
 import ExcelJS from "exceljs"; // Import the exceljs library
 import FileSaver from "file-saver";
@@ -177,6 +181,14 @@ const Reports: React.FC = () => {
     });
   };
 
+  const rowsPerPage = 5;
+  const currentPage = useSelector(
+    (state: RootState) => state.giveNumber.currentPage
+  );
+  const handlePageChange = (page: number) => {
+    dispatch(setCurrentPage(page));
+  };
+  const [bottom] = useState<TablePaginationPosition>("bottomRight");
   return (
     <div className="content">
       <Navbar />
@@ -213,7 +225,14 @@ const Reports: React.FC = () => {
               <Table
                 columns={columns}
                 dataSource={dataSource}
-                pagination={false}
+                pagination={{
+                  position: [bottom],
+                  current: currentPage,
+                  pageSize: rowsPerPage,
+                  total: giveNumber.length,
+                  onChange: handlePageChange,
+                  className: "custom-pagination",
+                }}
               />
             </div>
             <div>

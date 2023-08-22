@@ -7,52 +7,64 @@ import { useDispatch, useSelector } from "react-redux";
 import TextArea from "antd/es/input/TextArea";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { firestore } from "../../firebase/config";
-import { addService } from "../../features/serviceSlice";
+import { RootState } from "../../features/store";
+import { addUser, updateUserData } from "../../features/userSlice";
 
 const AddAcc: React.FC = () => {
   const { Option } = Select;
 
   const navigate = useNavigate();
 
-  const onChange = (e: CheckboxChangeEvent) => {
-    console.log(`checked = ${e.target.checked}`);
-  };
+  const selectedUser = useSelector(
+    (state: RootState) => state.user.selectedUser
+  );
 
   const handleButtonBackClick = () => {
-    navigate("/service");
+    navigate("/account-settings");
   };
 
   const dispatch = useDispatch();
 
-  const [serviceCode, setServiceCode] = useState("");
+  const [name, setName] = useState("");
 
-  const [serviceName, setServiceName] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [isActive, setIsActive] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
 
-  const [description, setDescription] = useState("");
+  const [userPhoneNumber, setUserPhoneNumber] = useState("");
 
-  const handleAddService = () => {
-    const serviceData = {
-      serviceCode,
-      serviceName,
-      description,
-      isActive,
+  const [userRole, setUserRole] = useState("");
+
+  const [username, setUserName] = useState("");
+
+  const [status, setStatus] = useState("");
+
+  const [avatarUser, setAvatarUser] = useState("");
+
+  const handleAddUser = () => {
+    const userData = {
+      name,
+      password,
+      userEmail,
+      userPhoneNumber,
+      userRole,
+      username,
+      status,
+      avatarUser,
     };
 
-    const serviceId = serviceCode;
+    const useId = name;
 
-    // Gửi đối tượng thiết bị mới đến Firestore
     firestore
-      .collection("services")
-      .doc(serviceId)
-      .set(serviceData)
+      .collection("users")
+      .doc(useId)
+      .set(userData)
       .then(() => {
-        dispatch(addService(serviceData));
-        navigate("/service");
+        dispatch(addUser(userData));
+        navigate("/account-settings");
       })
       .catch((error) => {
-        console.error("Error adding service: ", error);
+        console.error("Error adding : ", error);
       });
   };
 
@@ -62,76 +74,74 @@ const AddAcc: React.FC = () => {
       <div className="content-main">
         <Header />
         <div className="container-main">
-          <div className="title">Quản lý dịch vụ</div>
+          <div className="title">Quản lý tài khoản</div>
           <div className="detail-button">
             <div className="detail-service">
               <div className="detail-device-content">
-                <div className="title-detail-device">Thông tin dịch vụ</div>
+                <div className="title-detail-device">Thông tin tài khoản</div>
                 <div className="row pt-4">
                   <div className="col">
                     <div className="row">
                       <div className="col-3">
-                        Mã dịch vụ:<span className="red">*</span>
+                        Họ tên:<span className="red">*</span>
                       </div>
                       <div className="mt-2">
                         <Input
-                          value={serviceCode}
-                          onChange={(e) => setServiceCode(e.target.value)}
+                          placeholder="Nhập họ tên"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
                         ></Input>
                       </div>
                     </div>
                     <div className="row pt-2">
                       <div className="col-3">
-                        Tên dịch vụ:<span className="red">*</span>
+                        Số điện thoại:<span className="red">*</span>
                       </div>
                       <div className="mt-2">
                         <Input
-                          value={serviceName}
-                          onChange={(e) => setServiceName(e.target.value)}
+                          placeholder="Nhập số điện thoại"
+                          value={userPhoneNumber}
+                          onChange={(e) => setUserPhoneNumber(e.target.value)}
                         ></Input>
                       </div>
                     </div>
-                    <div className="title-detail-device pt-3">
-                      Quy tắc cấp số
-                    </div>
-                    <div className="row pt-3">
-                      <div className="col-4">
-                        {" "}
-                        <Checkbox onChange={onChange}>Tăng tự động từ</Checkbox>
+                    <div className="row pt-2">
+                      <div className="col-3">
+                        Email:<span className="red">*</span>
                       </div>
+                      <div className="mt-2">
+                        <Input
+                          placeholder="Nhập email"
+                          value={userEmail}
+                          onChange={(e) => setUserEmail(e.target.value)}
+                        ></Input>
+                      </div>
+                    </div>
+                    <div className="row pt-2">
+                      <div className="col-3">
+                        Vai trò:<span className="red">*</span>
+                      </div>
+                      <div className="mt-2">
+                        <Select
+                          placeholder={"Chọn vai trò"}
+                          value={userRole}
+                          style={{ width: "100%" }}
+                          className="select-status"
+                          onChange={(value) => setUserRole(value)}
+                          options={[
+                            { value: "Giám đốc", label: "Giám đốc" },
+                            {
+                              value: "Quản lý",
+                              label: "Quản lý",
+                            },
+                            { value: "Bác sĩ", label: "Bác sĩ" },
+                            { value: "Y tá", label: "Y tá" },
+                            { value: "Thực tập sinh", label: "Thực tập sinh" },
+                          ]}
+                        />
+                      </div>
+                    </div>
 
-                      <div className="col flex-input">
-                        <Input value={"0001"} style={{ width: 60 }}></Input>{" "}
-                        <span className="den">đến</span>
-                        <Input value={"9999"} style={{ width: 60 }}></Input>
-                      </div>
-                    </div>
-                    <div className="row pt-3">
-                      <div className="col-4">
-                        {" "}
-                        <Checkbox onChange={onChange}>Prefix:</Checkbox>
-                      </div>
-
-                      <div className="col flex-input">
-                        <Input value={"0001"} style={{ width: 60 }}></Input>
-                      </div>
-                    </div>
-                    <div className="row pt-3">
-                      <div className="col-4">
-                        {" "}
-                        <Checkbox onChange={onChange}>Surfix:</Checkbox>
-                      </div>
-
-                      <div className="col flex-input">
-                        <Input value={"0001"} style={{ width: 60 }}></Input>
-                      </div>
-                    </div>
-                    <div className="row pt-3">
-                      <div className="col-4">
-                        {" "}
-                        <Checkbox onChange={onChange}>Reset mỗi ngày:</Checkbox>
-                      </div>
-                    </div>
                     <div className="row pt-3">
                       <div className="col">
                         <span className="red">* </span>
@@ -142,14 +152,62 @@ const AddAcc: React.FC = () => {
                     </div>
                   </div>
                   <div className="col">
-                    <div className="col-3">
-                      Mô tả:<span className="red">*</span>
+                    <div className="row">
+                      <div className="col-3">
+                        Tên đăng nhập:<span className="red">*</span>
+                      </div>
+                      <div className="mt-2">
+                        <Input
+                          placeholder="Nhập tên đăng nhập"
+                          value={username}
+                          onChange={(e) => setUserName(e.target.value)}
+                        ></Input>
+                      </div>
                     </div>
-                    <div className="mt-2">
-                      <TextArea
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                      ></TextArea>
+                    <div className="row pt-2">
+                      <div className="col-3">
+                        Mật khẩu:<span className="red">*</span>
+                      </div>
+                      <div className="mt-2">
+                        <Input
+                          placeholder="Nhập mật khẩu"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                        ></Input>
+                      </div>
+                    </div>
+                    <div className="row pt-2">
+                      <div className="col-3 no-wrap">
+                        Nhập lại mật khẩu:<span className="red">*</span>
+                      </div>
+                      <div className="mt-2">
+                        <Input
+                          placeholder="Nhập lại mật khẩu"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                        ></Input>
+                      </div>
+                    </div>
+                    <div className="row pt-2">
+                      <div className="col-3">
+                        Tình trạng:<span className="red">*</span>
+                      </div>
+                      <div className="mt-2">
+                        <Select
+                          value={status}
+                          style={{ width: "100%" }}
+                          className="select-status"
+                          placeholder="Chọn tình trạng"
+                          onChange={(value) => setStatus(value)}
+                          options={[
+                            { value: "Hoạt động", label: "Hoạt động" },
+                            {
+                              value: "Ngưng hoạt động",
+                              label: "Ngưng hoạt động",
+                            },
+                          ]}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -160,8 +218,8 @@ const AddAcc: React.FC = () => {
             <button className="back-btn" onClick={handleButtonBackClick}>
               Hủy bỏ
             </button>
-            <button className="add-btn" onClick={handleAddService}>
-              Thêm dịch vụ
+            <button className="add-btn" onClick={handleAddUser}>
+              Cập nhật
             </button>
           </div>
         </div>

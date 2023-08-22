@@ -5,11 +5,12 @@ import Navbar from "../../components/navbar";
 import Header from "../../components/header";
 import moment from "moment";
 import { firestore } from "../../firebase/config";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { themThongBao } from "../../features/popoverSlice";
 
 const NewGiveNumber: React.FC = () => {
   const { Option } = Select;
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleButtonBackClick = () => {
@@ -51,6 +52,12 @@ const NewGiveNumber: React.FC = () => {
   }, []);
 
   const handlePrintNumber = () => {
+    const newPopoverData = {
+      userName: currentUser.name,
+      time: currentDateTime,
+    };
+
+    dispatch(themThongBao(newPopoverData));
     setIsOverlayVisible(true);
 
     const updatedNumber = currentNumber;

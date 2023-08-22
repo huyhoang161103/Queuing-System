@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Icon } from "@iconify/react";
-import { DatePicker, DatePickerProps, Table } from "antd";
+import { DatePicker, DatePickerProps, Input, Table } from "antd";
 import Navbar from "../../components/navbar";
 import Header from "../../components/header";
 import { useDispatch, useSelector } from "react-redux";
@@ -43,32 +43,18 @@ const DiarySettings: React.FC = () => {
 
   const columns = [
     {
-      title: "Số thứ tự",
+      title: "Tên đăng nhập",
       dataIndex: "stt",
       key: "stt",
       className: "no-wrap",
-      width: 200,
-      sorter: (a: any, b: any) => parseInt(b.stt) - parseInt(a.stt),
-      defaultSortOrder: "descend" as SortOrder,
+      width: 300,
     },
 
     {
-      title: "Tên dịch vụ",
-      dataIndex: "serviceName",
-      key: "serviceName",
-      className: "no-wrap",
-      width: 300,
-      sorter: (a: any, b: any) =>
-        parseInt(b.serviceName) - parseInt(a.serviceName),
-      defaultSortOrder: "descend" as SortOrder,
-    },
-    {
-      title: "Thời gian cấp",
+      title: "Thời gian tác động",
       key: "issuanceDateTime",
       className: "no-wrap",
-      sorter: (a: any, b: any) =>
-        parseInt(b.issuanceDateTime) - parseInt(a.issuanceDateTime),
-      defaultSortOrder: "descend" as SortOrder,
+
       width: 300,
       render: (text: any, record: { issuanceDate: any; issuanceTime: any }) => {
         const issuanceDate = record.issuanceDate;
@@ -77,54 +63,19 @@ const DiarySettings: React.FC = () => {
         return <div className="table-cell-content">{issuanceDateTime}</div>;
       },
     },
-    {
-      title: "Tình trạng",
-      dataIndex: "status",
-      className: "no-wrap",
-      width: 300,
-      key: "status",
-      sorter: (a: any, b: any) => parseInt(b.status) - parseInt(a.status),
-      defaultSortOrder: "descend" as SortOrder,
-      render: (status: string) => {
-        let color = "#E73F3F";
-        let text = "Bỏ qua";
 
-        if (status === "Đang chờ") {
-          color = "#3498db";
-          text = "Đang chờ";
-        } else if (status === "Đã sử dụng") {
-          color = "#95a5a6";
-          text = "Đã sử dụng";
-        }
-
-        return (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <div
-              style={{
-                width: "12px",
-                height: "12px",
-                borderRadius: "50%",
-                backgroundColor: color,
-                marginRight: "5px",
-              }}
-            ></div>
-            {text}
-          </div>
-        );
-      },
-    },
     {
-      title: "Nguồn cấp",
+      title: "IP thực hiện",
       dataIndex: "source",
       key: "source",
       width: 300,
-      sorter: (a: any, b: any) => parseInt(b.source) - parseInt(a.source),
-      defaultSortOrder: "descend" as SortOrder,
+    },
+
+    {
+      title: "Thao tác thực hiện",
+      dataIndex: "source",
+      key: "source",
+      width: 300,
     },
   ];
 
@@ -142,39 +93,10 @@ const DiarySettings: React.FC = () => {
     console.log(date, dateString);
   };
 
-  const handleDownload = () => {
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Danh sách cấp số");
+  const [searchKeyword, setSearchKeyword] = useState("");
 
-    // Add columns
-    worksheet.columns = [
-      { header: "Số thứ tự", key: "stt", width: 15 },
-      { header: "Tên dịch vụ", key: "serviceName", width: 30 },
-      { header: "Thời gian cấp", key: "issuanceDateTime", width: 30 },
-      { header: "Tình trạng", key: "status", width: 20 },
-      { header: "Nguồn cấp", key: "source", width: 20 },
-    ];
-
-    // Add data rows
-    dataSource.forEach((item) => {
-      worksheet.addRow({
-        stt: item.stt,
-        serviceName: item.serviceName,
-        issuanceDateTime: `${item.issuanceTime} ${item.issuanceDate}`,
-        status: item.status,
-        source: item.source,
-      });
-    });
-
-    // Create a buffer containing the Excel file
-    workbook.xlsx.writeBuffer().then((buffer: BlobPart) => {
-      const blob = new Blob([buffer], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      });
-
-      const fileName = "Danh_sach_cap_so.xlsx";
-      FileSaver.saveAs(blob, fileName);
-    });
+  const handleSearchKeywordChange = (value: string) => {
+    setSearchKeyword(value);
   };
 
   return (
@@ -207,6 +129,25 @@ const DiarySettings: React.FC = () => {
                 </div>
               </div>
             </div>
+            <div className="search">
+              <div className="">Từ khóa</div>
+              <div className="search-filter">
+                <div className="search-ticket">
+                  <Input
+                    style={{ width: 300, height: 40 }}
+                    type="text"
+                    className="form-control"
+                    placeholder="Nhập từ khóa"
+                    value={searchKeyword}
+                    onChange={(e) => handleSearchKeywordChange(e.target.value)}
+                  />
+                  <Icon
+                    icon="iconamoon:search"
+                    className="search-ticket-icon"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
           <div className="tb-add">
             <div className="tb">
@@ -216,17 +157,7 @@ const DiarySettings: React.FC = () => {
                 pagination={false}
               />
             </div>
-            <div>
-              <button className="button-add" onClick={handleDownload}>
-                <div className="col">
-                  <Icon
-                    icon="solar:file-download-bold"
-                    className="button-icon"
-                  />
-                  <p>Tải về</p>
-                </div>
-              </button>
-            </div>
+            <div></div>
           </div>
         </div>
       </div>
